@@ -1,3 +1,4 @@
+import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,9 +10,14 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(body: Center(child: Text('Hello World!'))),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false, //Remove banner debug tag
+      theme: AppTheme(selectedColor: 0).getTheme(),
+      home: Scaffold(
+        body: Center(
+          child: FilledButton(onPressed: () {}, child: Text('Hola')),
+        ),
+      ),
     );
   }
 }
