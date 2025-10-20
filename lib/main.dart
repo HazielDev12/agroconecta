@@ -1,5 +1,9 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
+import 'package:agroconecta/presentation/screens/menu_principal.dart';
 import 'package:flutter/material.dart';
+
+/*Pagina de menú principal de usuarios */
+
 
 void main() {
   runApp(const MainApp());
@@ -13,11 +17,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, //Remove banner debug tag
       theme: AppTheme(selectedColor: 0).getTheme(),
-      home: Scaffold( 
-        body: Center(
-          child: FilledButton(onPressed: () {}, child: Text('Hola')),
-        ),
-      ),
+      home: const HomePage(),
     );
   }
 }
