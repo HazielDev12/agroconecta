@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, //Remove banner debug tag
       theme: AppTheme(selectedColor: 0).getTheme(),
-      home: Scaffold(
+      home: Scaffold( 
         body: Center(
           child: FilledButton(onPressed: () {}, child: Text('Hola')),
         ),
