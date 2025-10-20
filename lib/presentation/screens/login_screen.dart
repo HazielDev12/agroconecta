@@ -22,10 +22,10 @@ class LoginScreen extends StatelessWidget {
           //Contenido Centrado
           Center(
             child: Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(25),
               margin: const EdgeInsets.symmetric(horizontal: 25),
               decoration: BoxDecoration(
-                color: colorList[1].withValues(alpha: 0.8),
+                color: colorList[2].withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -40,16 +40,104 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              height: 600, //altura de la tarjeta
+              height: 650, //altura de la tarjeta
               child: Column(
                 children: [
                   SvgPicture.asset(
                     'assets/images/logo_con_texto.svg',
                     height: 200, // ajusta según tu diseño
                   ),
+                  const SizedBox(height: 16),
+                  //Texto principal
+                  const Text(
+                    'Bienvenido  a\nAgroConecta Q.Roo',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const Text(
+                    'Tecnología que siembra futuro.',
+                    style: TextStyle(fontSize: 14, color: Colors.black54),
+                  ),
                   const SizedBox(height: 30),
 
-                  const Text('Bienvenido a AgroConecta Q.Roo'),
+                  //Campo de usuario/correo
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Correo, usuario o No. de celular',
+                      labelStyle: const TextStyle(color: Colors.black54),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  //Campo contraseña
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Contraseña',
+                      labelStyle: const TextStyle(color: Colors.black54),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  //Boton principal
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorList[0],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      child: const Text(
+                        'Iniciar Sesión',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  //Links inferiores
+                  const Text(
+                    '¿Olvidaste tu contraseña?',
+                    style: TextStyle(
+                      color: Color(0xFF22A788),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        '¿No tienes cuenta? ',
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                      Text(
+                        'Regístrate aquí',
+                        style: TextStyle(
+                          color: Color(0xFF22A788),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
