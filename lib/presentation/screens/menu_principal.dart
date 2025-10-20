@@ -1,6 +1,7 @@
 /* Desarollaremos el menú de usuarios basamos en el FIGMA de agroconecta */
 
 import 'dart:async';
+import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -66,20 +67,11 @@ class _HomePageState extends State<HomePage> {
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: cs.surface,
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: cs.surface,
-        foregroundColor: cs.onSurface,
-        title: const Text(
-          'AGROCONECTA',
-          style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 0.5),
-        ),
-      ),
+      backgroundColor: colorList[2],  
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
+          const SizedBox(height: 50),
           // --- Saludo ---
           _GreetingCard(
             name: widget.userName,
@@ -135,8 +127,9 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          const SizedBox(height: 16),
-
+          const SizedBox(height: 12),
+          // --- Título sección ---
+          _SectionTitle(text: 'Acesos Rápidos'),
           // --- Accesos rápidos (2x2) ---
           GridView.count(
             crossAxisCount: 2,
@@ -147,29 +140,29 @@ class _HomePageState extends State<HomePage> {
             shrinkWrap: true,
             children: [
               _QuickAction(
-                color: cs.primary,
+                color: colorList[0],
                 iconPath: 'assets/icons/megafono.png',
                 title: 'Ver Convocatorias',
-                subtitle: 'Alertas y avisos',
+                subtitle: 'Actuales',
                 onTap: () {},
               ),
               _QuickAction(
-                color: cs.tertiaryContainer,
+                color: colorList[0],
                 iconPath: 'assets/icons/calendario.png',
                 title: 'Ver eventos',
                 subtitle: 'Calendario',
                 onTap: () {},
               ),
               _QuickAction(
-                color: cs.secondaryContainer,
+                color: colorList[0],
                 iconPath: 'assets/icons/mentor.png',
                 title: 'Buscar mentor',
-                subtitle: 'Por zona o tema',
+                subtitle: 'Por zona',
                 onTap: () {},
               ),
               _QuickAction(
-                color: cs.primaryContainer,
-                iconPath: 'assets/icons/parcela.png',
+                color: colorList[0],
+                iconPath: 'assets/icons/campo.png',
                 title: 'Ver mi Parcela',
                 subtitle: 'Detalles',
                 onTap: () {},
@@ -219,10 +212,11 @@ class _GreetingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Container(
+      /* PARTE DE ARRIBA DEL SALUDO DISEÑO */
       decoration: BoxDecoration(
-        color: cs.primary,
+        color: colorList[0],
         borderRadius: BorderRadius.circular(12),
-      ),
+      ), //DECORACION DEL DISEÑO 
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
