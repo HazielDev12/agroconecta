@@ -67,16 +67,13 @@ class _HomePageState extends State<HomePage> {
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: colorList[2],  
+      backgroundColor: colorList[2],
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
           const SizedBox(height: 50),
           // --- Saludo ---
-          _GreetingCard(
-            name: widget.userName,
-            zone: widget.zoneName,
-          ),
+          _GreetingCard(name: widget.userName, zone: widget.zoneName),
 
           const SizedBox(height: 12),
 
@@ -189,9 +186,18 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: 0,
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Inicio'),
-          NavigationDestination(icon: Icon(Icons.volunteer_activism_outlined), label: 'Apoyos'),
-          NavigationDestination(icon: Icon(Icons.photo_library_outlined), label: 'Evidencias'),
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            label: 'Inicio',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.volunteer_activism_outlined),
+            label: 'Apoyos',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.photo_library_outlined),
+            label: 'Evidencias',
+          ),
           NavigationDestination(icon: Icon(Icons.person_outline), label: 'Yo'),
         ],
       ),
@@ -216,7 +222,7 @@ class _GreetingCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorList[0],
         borderRadius: BorderRadius.circular(12),
-      ), //DECORACION DEL DISEÑO 
+      ), //DECORACION DEL DISEÑO
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -373,17 +379,24 @@ class _QuickAction extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w800, fontSize: 14)),
+                      Text(
+                        title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                        ),
+                      ),
                       const SizedBox(height: 3),
-                      Text(subtitle,
-                          style: TextStyle(
-                              color: cs.onPrimary.withOpacity(.9),
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w600)),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          color: cs.onPrimary.withOpacity(.9),
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -446,8 +459,10 @@ class _ReminderCard extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(.12),
                   foregroundColor: Colors.red.shade700,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   shape: const StadiumBorder(),
                 ),
                 onPressed: onDismiss,
@@ -458,8 +473,10 @@ class _ReminderCard extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: cs.primary,
                   foregroundColor: cs.onPrimary,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   shape: const StadiumBorder(),
                 ),
                 onPressed: onOpen,

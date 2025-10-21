@@ -1,6 +1,7 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -50,24 +51,24 @@ class LoginScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   //Texto principal
                   const Text(
-                    'Bienvenido  a\nAgroConecta Q.Roo',
+                    'Tecnología que siembra futuro.',
+                    style: TextStyle(fontSize: 14, color: Colors.black54),
+                  ),
+                  /*                   const Text(
+                    'Bienvenido',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
-                  ),
-                  const Text(
-                    'Tecnología que siembra futuro.',
-                    style: TextStyle(fontSize: 14, color: Colors.black54),
-                  ),
+                  ), */
                   const SizedBox(height: 30),
 
                   //Campo de usuario/correo
                   TextField(
                     decoration: InputDecoration(
-                      labelText: 'Correo, usuario o No. de celular',
+                      labelText: 'Usuario',
                       labelStyle: const TextStyle(color: Colors.black54),
                       filled: true,
                       fillColor: Colors.white,
@@ -97,7 +98,9 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.go('/home');
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colorList[0],
                         shape: RoundedRectangleBorder(
