@@ -54,15 +54,7 @@ class LoginScreen extends StatelessWidget {
                     'Tecnología que siembra futuro.',
                     style: TextStyle(fontSize: 14, color: Colors.black54),
                   ),
-                  /*                   const Text(
-                    'Bienvenido',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ), */
+
                   const SizedBox(height: 30),
 
                   //Campo de usuario/correo
@@ -99,7 +91,7 @@ class LoginScreen extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        context.go('/home');
+                        context.push('/home');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colorList[0],

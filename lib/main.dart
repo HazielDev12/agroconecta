@@ -1,5 +1,5 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
-import 'package:agroconecta/config/theme/router/app_router.dart';
+import 'package:agroconecta/config/router/app_router.dart';
 import 'package:flutter/material.dart';
 
 /*Pagina de menú principal de usuarios */
