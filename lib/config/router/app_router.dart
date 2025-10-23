@@ -7,5 +7,6 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
     GoRoute(path: '/home', builder: (context, state) => HomePage()),
+    GoRoute(path: '/sign-up', builder: (context, state) => SignUpScreen()),
   ],
 );

@@ -1,4 +1,5 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -119,16 +120,20 @@ class LoginScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         '¿No tienes cuenta? ',
                         style: TextStyle(color: Colors.black54),
                       ),
-                      Text(
-                        'Regístrate aquí',
-                        style: TextStyle(
-                          color: Color(0xFF22A788),
-                          fontWeight: FontWeight.bold,
+                      GestureDetector(
+                        onTap: () => context.push('/sign-up'),
+                        child: const Text(
+                          'Regístrate aquí',
+                          style: TextStyle(
+                            color: Color(0xFF22A788),
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline, // opcional
+                          ),
                         ),
                       ),
                     ],
