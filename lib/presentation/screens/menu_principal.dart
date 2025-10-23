@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   final String userName;
@@ -141,7 +142,10 @@ class _HomePageState extends State<HomePage> {
                 iconPath: 'assets/icons/megafono.png',
                 title: 'Ver Convocatorias',
                 subtitle: 'Actuales',
-                onTap: () {},
+                onTap: () {
+                  // Acción al tocar el acceso rápido
+                  context.go( '/login' );
+                },
               ),
               _QuickAction(
                 color: colorList[0],
