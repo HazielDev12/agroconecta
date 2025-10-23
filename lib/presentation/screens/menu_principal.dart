@@ -1,8 +1,10 @@
-/* Desarollaremos el menú de usuarios basamos en el FIGMA de agroconecta */
+/* Desarrollaremos el menú de usuarios basado en el FIGMA de AgroConecta */
 
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   final String userName;
@@ -20,8 +22,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // --- Carrusel ---
-  final _pageCtrl = PageController(viewportFraction: 1.0);
-  final _banners = const <_BannerItem>[
+  final PageController _pageCtrl = PageController(viewportFraction: 1.0);
+
+  final List<_BannerItem> _banners = const <_BannerItem>[
     _BannerItem(
       image: 'assets/banners/banner_1.jpg',
       title: 'Convocatoria SEDARPE',
@@ -38,6 +41,7 @@ class _HomePageState extends State<HomePage> {
       subtitle: 'Tasas preferenciales\n¡Infórmate!',
     ),
   ];
+
   int _current = 0;
   Timer? _autoSlide;
 
@@ -45,7 +49,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _autoSlide = Timer.periodic(const Duration(seconds: 5), (_) {
-      if (!mounted) return;
+      if (!mounted || !_pageCtrl.hasClients) return;
       final next = (_current + 1) % _banners.length;
       _pageCtrl.animateToPage(
         next,
@@ -64,142 +68,162 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: colorList[2],
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-        children: [
-          const SizedBox(height: 50),
-          // --- Saludo ---
-          _GreetingCard(name: widget.userName, zone: widget.zoneName),
+    // Tope sólido bajo el centro de notificaciones
+    final overlay = SystemUiOverlayStyle(
+      statusBarColor: cs.surface, // usa colorList[0] si quieres tu verde
+      statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+      statusBarBrightness: isDark ? Brightness.dark : Brightness.light, // iOS
+    );
 
-          const SizedBox(height: 12),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlay,
+      child: Scaffold(
+        backgroundColor: cs.surface,
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            physics: const ClampingScrollPhysics(),
+            children: [
+              // --- Saludo ---
+              _GreetingCard(name: widget.userName, zone: widget.zoneName),
 
-          // --- Título sección ---
-          _SectionTitle(text: 'Importantes'),
+              const SizedBox(height: 12),
 
-          const SizedBox(height: 8),
+              // --- Título sección ---
+              const _SectionTitle(text: 'Importantes'),
 
-          // --- Carrusel ---
-          SizedBox(
-            height: 190,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: Stack(
-                children: [
-                  PageView.builder(
-                    controller: _pageCtrl,
-                    onPageChanged: (i) => setState(() => _current = i),
-                    itemCount: _banners.length,
-                    itemBuilder: (_, i) => _BannerCard(item: _banners[i]),
+              const SizedBox(height: 8),
+
+              // --- Carrusel ---
+              SizedBox(
+                height: 190,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Stack(
+                    children: [
+                      PageView.builder(
+                        controller: _pageCtrl,
+                        onPageChanged: (i) => setState(() => _current = i),
+                        itemCount: _banners.length,
+                        itemBuilder: (_, i) => _BannerCard(item: _banners[i]),
+                      ),
+                      // Dots
+                      Positioned(
+                        bottom: 10,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(_banners.length, (i) {
+                            final isActive = i == _current;
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              margin: const EdgeInsets.symmetric(horizontal: 3),
+                              width: isActive ? 22 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(
+                                  alpha: isActive ? 1 : .5,
+                                ),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                    ],
                   ),
-                  // Dots
-                  Positioned(
-                    bottom: 10,
-                    left: 0,
-                    right: 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(_banners.length, (i) {
-                        final isActive = i == _current;
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          width: isActive ? 22 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: isActive
-                                ? Colors.white
-                                : Colors.white.withOpacity(.5),
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                        );
-                      }),
-                    ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+              // --- Título sección ---
+              const _SectionTitle(text: 'Accesos rápidos'),
+
+              // --- Accesos rápidos (2x2) ---
+              GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1.9,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: [
+                  _QuickAction(
+                    color: colorList[0],
+                    iconPath: 'assets/icons/megafono.png',
+                    title: 'Ver Convocatorias',
+                    subtitle: 'Actuales',
+                    onTap: () => context.go('/login'),
+                  ),
+                  _QuickAction(
+                    color: colorList[0],
+                    iconPath: 'assets/icons/calendario.png',
+                    title: 'Ver eventos',
+                    subtitle: 'Calendario',
+                    onTap: () {},
+                  ),
+                  _QuickAction(
+                    color: colorList[0],
+                    iconPath: 'assets/icons/mentor.png',
+                    title: 'Buscar mentor',
+                    subtitle: 'Por zona',
+                    onTap: () {},
+                  ),
+                  _QuickAction(
+                    color: colorList[0],
+                    iconPath: 'assets/icons/campo.png',
+                    title: 'Ver mi Parcela',
+                    subtitle: 'Detalles',
+                    onTap: () {},
                   ),
                 ],
               ),
-            ),
-          ),
 
-          const SizedBox(height: 12),
-          // --- Título sección ---
-          _SectionTitle(text: 'Acesos Rápidos'),
-          // --- Accesos rápidos (2x2) ---
-          GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 1.9,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            children: [
-              _QuickAction(
-                color: colorList[0],
-                iconPath: 'assets/icons/megafono.png',
-                title: 'Ver Convocatorias',
-                subtitle: 'Actuales',
-                onTap: () {},
-              ),
-              _QuickAction(
-                color: colorList[0],
-                iconPath: 'assets/icons/calendario.png',
-                title: 'Ver eventos',
-                subtitle: 'Calendario',
-                onTap: () {},
-              ),
-              _QuickAction(
-                color: colorList[0],
-                iconPath: 'assets/icons/mentor.png',
-                title: 'Buscar mentor',
-                subtitle: 'Por zona',
-                onTap: () {},
-              ),
-              _QuickAction(
-                color: colorList[0],
-                iconPath: 'assets/icons/campo.png',
-                title: 'Ver mi Parcela',
-                subtitle: 'Detalles',
-                onTap: () {},
+              const SizedBox(height: 8),
+
+              const _SectionTitle(text: 'Recordatorios'),
+
+              const SizedBox(height: 8),
+
+              // --- Recordatorio ---
+              _ReminderCard(
+                title: 'Mañana 09:00 — Taller de compostaje (Dziuché)',
+                onDismiss: () {},
+                onOpen: () {},
               ),
             ],
           ),
+        ),
 
-          const SizedBox(height: 8),
-
-          _SectionTitle(text: 'Recordatorios'),
-
-          const SizedBox(height: 8),
-
-          // --- Recordatorio ---
-          _ReminderCard(
-            title: 'Mañana 09:00 — Taller de compostaje (Dziuché)',
-            onDismiss: () {},
-            onOpen: () {},
-          ),
-        ],
-      ),
-
-      // --- Bottom Nav (placeholder, opcional si ya tienes tu Shell) ---
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: 0,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            label: 'Inicio',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.volunteer_activism_outlined),
-            label: 'Apoyos',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.photo_library_outlined),
-            label: 'Evidencias',
-          ),
-          NavigationDestination(icon: Icon(Icons.person_outline), label: 'Yo'),
-        ],
+        // --- Bottom Nav (placeholder, opcional si ya tienes tu Shell) ---
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: 0,
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.home_outlined),
+              label: 'Inicio',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.volunteer_activism_outlined),
+              label: 'Apoyos',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.photo_library_outlined),
+              label: 'Evidencias',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person_outline),
+              label: 'Yo',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -216,13 +240,11 @@ class _GreetingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Container(
-      /* PARTE DE ARRIBA DEL SALUDO DISEÑO */
       decoration: BoxDecoration(
         color: colorList[0],
         borderRadius: BorderRadius.circular(12),
-      ), //DECORACION DEL DISEÑO
+      ),
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,7 +261,7 @@ class _GreetingCard extends StatelessWidget {
           Text(
             'Zona: $zone',
             style: TextStyle(
-              color: Colors.white.withOpacity(.9),
+              color: Colors.white.withValues(alpha: .9),
               fontSize: 12.5,
               fontWeight: FontWeight.w600,
             ),
@@ -260,7 +282,7 @@ class _SectionTitle extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        color: cs.onSurface.withOpacity(.85),
+        color: cs.onSurface.withValues(alpha: .85),
         fontSize: 13,
         letterSpacing: .2,
         fontWeight: FontWeight.w700,
@@ -321,7 +343,7 @@ class _BannerCard extends StatelessWidget {
               Text(
                 item.subtitle,
                 style: TextStyle(
-                  color: cs.onPrimary.withOpacity(.95),
+                  color: cs.onPrimary.withValues(alpha: .95),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -392,7 +414,7 @@ class _QuickAction extends StatelessWidget {
                       Text(
                         subtitle,
                         style: TextStyle(
-                          color: cs.onPrimary.withOpacity(.9),
+                          color: cs.onPrimary.withValues(alpha: .9),
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,
                         ),
@@ -457,12 +479,10 @@ class _ReminderCard extends StatelessWidget {
             children: [
               FilledButton.tonal(
                 style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red.withOpacity(.12),
+                  backgroundColor: Colors.red.withValues(alpha: .12),
                   foregroundColor: Colors.red.shade700,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   shape: const StadiumBorder(),
                 ),
                 onPressed: onDismiss,
@@ -473,10 +493,8 @@ class _ReminderCard extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: cs.primary,
                   foregroundColor: cs.onPrimary,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   shape: const StadiumBorder(),
                 ),
                 onPressed: onOpen,
