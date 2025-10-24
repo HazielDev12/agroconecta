@@ -1,4 +1,5 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
+import 'package:agroconecta/features/shared/widgets/custom_text_form_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -60,16 +61,9 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(height: 30),
 
                     //Campo de usuario/correo
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Usuario',
-                        labelStyle: const TextStyle(color: Colors.black54),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
+                    const CustomTextFormField(
+                      label: 'Correo',
+                      keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 16),
 
