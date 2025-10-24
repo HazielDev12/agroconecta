@@ -160,14 +160,14 @@ class _HomePageState extends State<HomePage> {
                     iconPath: 'assets/icons/megafono.png',
                     title: 'Ver Convocatorias',
                     subtitle: 'Actuales',
-                    onTap: () => context.go('/login'),
+                    onTap: () => context.go('/convocatorias'),
                   ),
                   _QuickAction(
                     color: colorList[0],
                     iconPath: 'assets/icons/calendario.png',
                     title: 'Ver eventos',
                     subtitle: 'Calendario',
-                    onTap: () {},
+                    onTap: () => context.go('/login'),
                   ),
                   _QuickAction(
                     color: colorList[0],
