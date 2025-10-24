@@ -68,17 +68,9 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     //Campo contraseña
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Contraseña',
-                        labelStyle: const TextStyle(color: Colors.black54),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
+                    const CustomTextFormField(
+                      label: 'Contraseña',
+                      keyboardType: TextInputType.visiblePassword,
                     ),
                     const SizedBox(height: 20),
                     //Links inferiores
