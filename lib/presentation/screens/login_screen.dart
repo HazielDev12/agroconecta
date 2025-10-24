@@ -1,5 +1,4 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -85,8 +84,22 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
-
+                  const SizedBox(height: 20),
+                  //Links inferiores
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () => context.push('/forgot-password'),
+                      child: const Text(
+                        '¿Olvidaste tu contraseña?',
+                        style: TextStyle(
+                          color: Color(0xFF22A788),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
                   //Boton principal
                   SizedBox(
                     width: double.infinity,
@@ -107,17 +120,8 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
 
-                  //Links inferiores
-                  const Text(
-                    '¿Olvidaste tu contraseña?',
-                    style: TextStyle(
-                      color: Color(0xFF22A788),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -132,7 +136,7 @@ class LoginScreen extends StatelessWidget {
                           style: TextStyle(
                             color: Color(0xFF22A788),
                             fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline, // opcional
+                            decoration: TextDecoration.underline,
                           ),
                         ),
                       ),
