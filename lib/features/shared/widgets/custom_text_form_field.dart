@@ -52,7 +52,7 @@ class CustomTextFormField extends StatelessWidget {
         style: const TextStyle(fontSize: 20, color: Colors.black54),
         decoration: InputDecoration(
           floatingLabelStyle: const TextStyle(
-            color: Colors.black,
+            color: Colors.black45,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
