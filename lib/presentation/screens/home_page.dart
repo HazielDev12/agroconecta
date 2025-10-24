@@ -203,23 +203,43 @@ class _HomePageState extends State<HomePage> {
         ),
 
         // --- Bottom Nav (placeholder, opcional si ya tienes tu Shell) ---
-        bottomNavigationBar: NavigationBar(
+                bottomNavigationBar: NavigationBar(
           selectedIndex: 0,
+          onDestinationSelected: (index) {
+            switch (index) {
+              case 0:
+                context.go('/home'); // Inicio
+                break;
+              case 1:
+                context.go('/apoyos'); // Apoyos
+                break;
+              case 2:
+                context.go('/evidencias'); // Evidencias
+                break;
+              case 3:
+                context.go('/perfil'); // Perfil
+                break;
+            }
+          },
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
+              selectedIcon: Icon(Icons.home),
               label: 'Inicio',
             ),
             NavigationDestination(
               icon: Icon(Icons.volunteer_activism_outlined),
+              selectedIcon: Icon(Icons.volunteer_activism),
               label: 'Apoyos',
             ),
             NavigationDestination(
               icon: Icon(Icons.photo_library_outlined),
+              selectedIcon: Icon(Icons.photo_library),
               label: 'Evidencias',
             ),
             NavigationDestination(
               icon: Icon(Icons.person_outline),
+              selectedIcon: Icon(Icons.person),
               label: 'Yo',
             ),
           ],
