@@ -70,7 +70,7 @@ class LoginScreen extends StatelessWidget {
                     //Campo contraseña
                     const CustomTextFormField(
                       label: 'Contraseña',
-                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
                     ),
                     const SizedBox(height: 10),
                     //Links inferiores

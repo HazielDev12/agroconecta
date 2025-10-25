@@ -1,5 +1,5 @@
-import 'package:agroconecta/presentation/screens/forgot_password_screen.dart';
-import 'package:agroconecta/presentation/screens/screens.dart';
+import 'package:agroconecta/features/products/presentation/screens/forgot_password_screen.dart';
+import 'package:agroconecta/features/products/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
 // GoRouter configuration
