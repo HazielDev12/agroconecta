@@ -108,11 +108,9 @@ class _ConvocatoriaPageState extends State<ConvocatoriaPage> {
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               if (context.canPop()) {
-                context.pop();              // vuelve al Home si llegaste con push
+                context.pop();
               } else {
-                // usa uno de estos según tu router:
-                context.go('/home');        // si NO usas "name" en la ruta
-                // context.goNamed('home'); // si tu ruta se llama name: 'home'
+                context.go('/home');
               }
             },
           ),
