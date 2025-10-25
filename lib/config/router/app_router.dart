@@ -3,16 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-// GoRouter configuration
+/// Configuración de GoRouter (sin navigatorBuilder/builder aquí)
 final GoRouter appRouter = GoRouter(
   debugLogDiagnostics: kDebugMode,
   initialLocation: '/login',
+
   routes: [
     // Evita "no routes for location: /"
-    GoRoute(
-      path: '/',
-      redirect: (_, __) => '/home',
-    ),
+    GoRoute(path: '/', redirect: (_, __) => '/home'),
 
     GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
     GoRoute(path: '/home', builder:  (_, __) => const HomePage()),
@@ -20,14 +18,22 @@ final GoRouter appRouter = GoRouter(
   ],
 
   // Página de error personalizada
-  errorBuilder: (context, state) =>
-      NotFoundScreen(error: state.error, currentLocation: state.uri.toString()),
+  errorBuilder: (context, state) => NotFoundScreen(
+    error: state.error,
+    currentLocation: state.uri.toString(),
+  ),
 );
 
+/// Pantalla para rutas no encontradas
 class NotFoundScreen extends StatelessWidget {
-  final Exception? error;
-  final String? currentLocation; // 👈 la ubicación actual viene del errorBuilder
-  const NotFoundScreen({super.key, this.error, this.currentLocation});
+  final Object? error;
+  final String? currentLocation; // llega desde errorBuilder
+
+  const NotFoundScreen({
+    super.key,
+    this.error,
+    this.currentLocation,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +50,8 @@ class NotFoundScreen extends StatelessWidget {
         }
 
         // 2) Si no hay historial y NO estamos en /home, vamos a /home
-        final loc = currentLocation ?? // preferimos la pasada por errorBuilder
-            router.routeInformationProvider.value.location; // fallback compatible
+        final loc = currentLocation ??
+            router.routeInformationProvider.value.location; // fallback amplio
         if (loc != '/home') {
           router.go('/home');
           return false;
@@ -61,11 +67,11 @@ class NotFoundScreen extends StatelessWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              final router = GoRouter.of(context);
-              if (router.canPop()) {
-                router.pop();
+              final r = GoRouter.of(context);
+              if (r.canPop()) {
+                r.pop();
               } else {
-                router.go('/home');
+                r.go('/home');
               }
             },
           ),
@@ -88,7 +94,9 @@ class NotFoundScreen extends StatelessWidget {
                 Text(
                   (error?.toString() ?? 'Ruta inválida o eliminada.'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: cs.onSurface.withValues(alpha: .7)),
+                  style: TextStyle(
+                    color: cs.onSurface.withValues(alpha: .7),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 FilledButton(
