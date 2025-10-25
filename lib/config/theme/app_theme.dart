@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const colorList = <Color>[
   Color(0xFF22A788),
@@ -16,6 +17,22 @@ class AppTheme {
         'El color seleccionado debe ser menor o igual al ${colorList.length - 1}',
       );
 
-  ThemeData getTheme() =>
-      ThemeData(useMaterial3: true, colorSchemeSeed: colorList[selectedColor]);
+  ThemeData getTheme() => ThemeData(
+    //General
+    useMaterial3: true,
+    colorSchemeSeed: colorList[selectedColor],
+
+    //Texts
+    textTheme: TextTheme(
+      titleLarge: GoogleFonts.montserratAlternates().copyWith(
+        fontSize: 40,
+        fontWeight: FontWeight.bold,
+      ),
+      titleMedium: GoogleFonts.montserratAlternates().copyWith(
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+      ),
+      titleSmall: GoogleFonts.montserratAlternates().copyWith(fontSize: 20),
+    ),
+  );
 }
