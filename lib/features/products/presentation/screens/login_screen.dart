@@ -136,7 +136,17 @@ class LoginScreen extends StatelessWidget {
             ),
           ],
         ),
+        // const _RegisterView(),
       ),
     );
+  }
+}
+
+class _RegisterView extends StatelessWidget {
+  const _RegisterView();
+
+  @override
+  Widget build(BuildContext context) {
+    throw UnimplementedError();
   }
 }
