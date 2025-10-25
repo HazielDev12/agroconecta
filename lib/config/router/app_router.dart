@@ -64,7 +64,7 @@ class NotFoundScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 FilledButton(
-                  onPressed: () => context.goNamed('home'),
+                  onPressed: () => context.go('/home'),
                   child: const Text('Ir al inicio'),
                 ),
               ],
