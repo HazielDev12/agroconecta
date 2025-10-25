@@ -11,16 +11,18 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(body: const _RegisterView()),
+      child: Scaffold(body: const _LoginView()),
     );
   }
 }
 
-class _RegisterView extends StatelessWidget {
-  const _RegisterView();
+class _LoginView extends StatelessWidget {
+  const _LoginView();
 
   @override
   Widget build(BuildContext context) {
+    final textStyles = Theme.of(context).textTheme;
+
     return Stack(
       children: [
         Container(
@@ -67,16 +69,16 @@ class _RegisterView extends StatelessWidget {
                     'Tecnología que siembra futuro.',
                     style: TextStyle(fontSize: 14, color: Colors.black54),
                   ),
-              
+
                   const SizedBox(height: 30),
-              
+
                   //Campo de usuario/correo
                   const CustomTextFormField(
                     label: 'Correo',
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 16),
-              
+
                   //Campo contraseña
                   const CustomTextFormField(
                     label: 'Contraseña',
@@ -118,7 +120,7 @@ class _RegisterView extends StatelessWidget {
                       ),
                     ),
                   ),
-              
+
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
