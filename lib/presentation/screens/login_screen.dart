@@ -72,7 +72,7 @@ class LoginScreen extends StatelessWidget {
                       label: 'Contraseña',
                       keyboardType: TextInputType.visiblePassword,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     //Links inferiores
                     Align(
                       alignment: Alignment.centerRight,
