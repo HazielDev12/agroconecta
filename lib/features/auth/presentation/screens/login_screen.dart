@@ -104,9 +104,7 @@ class _LoginView extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        context.push('/home');
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colorList[0],
                         shape: RoundedRectangleBorder(
