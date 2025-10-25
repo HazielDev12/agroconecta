@@ -86,106 +86,117 @@ class _ConvocatoriaPageState extends State<ConvocatoriaPage> {
     // final isDark = theme.brightness == Brightness.dark;
 
     final overlay = SystemUiOverlayStyle(
-      statusBarColor: colorList[0],          // mismo verde que tu AppBar
-      statusBarIconBrightness: Brightness.light, // iconos claros (Android)
-      statusBarBrightness: Brightness.dark,      // iOS: texto claro
+      statusBarColor: colorList[0],
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
     );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlay,
-      child: Scaffold(
-        backgroundColor: cs.surface,
-        appBar: AppBar(
-          backgroundColor: colorList[2],
-          elevation: 0,
-          foregroundColor: Colors.black, // iconos/texto blancos
-          centerTitle: true,
-          title: const Text(
-            'CONVOCATORIAS',
-            style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 0.5),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/home');
-              }
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.more_vert),
-              onPressed: () {},
+      child: WillPopScope(
+        // Maneja el botón físico/gesto de "back"
+        onWillPop: () async {
+          if (context.canPop()) {
+            context.pop(); // vuelve a la página anterior si existe
+          } else {
+            context.go('/home'); // si no hay historial, ir al Home
+          }
+          return false; // ya manejamos la navegación
+        },
+        child: Scaffold(
+          backgroundColor: cs.surface,
+          appBar: AppBar(
+            backgroundColor: colorList[2],
+            elevation: 0,
+            foregroundColor: Colors.black,
+            centerTitle: true,
+            title: const Text(
+              'CONVOCATORIAS',
+              style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 0.5),
             ),
-          ],
-      ),
-        body: SafeArea(
-          top: false,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            physics: const ClampingScrollPhysics(),
-            children: [
-              _SearchField(
-                hint: 'Buscar convocatorias o palabra clave',
-                onChanged: (q) {
-                },
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go('/home');
+                }
+              },
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: () {},
               ),
-              const SizedBox(height: 10),
-              _FiltersRow(
-                onCategory: () {},
-                onLocation: () {},
-                onDeadline: () {},
-              ),
-              const SizedBox(height: 16),
-              const _SectionTitle(text: 'Destacadas'),
-              const SizedBox(height: 10),
+            ],
+          ),
+          body: SafeArea(
+            top: false,
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              physics: const ClampingScrollPhysics(),
+              children: [
+                _SearchField(
+                  hint: 'Buscar convocatorias o palabra clave',
+                  onChanged: (q) {
+                  },
+                ),
+                const SizedBox(height: 10),
+                _FiltersRow(
+                  onCategory: () {},
+                  onLocation: () {},
+                  onDeadline: () {},
+                ),
+                const SizedBox(height: 16),
+                const _SectionTitle(text: 'Destacadas'),
+                const SizedBox(height: 10),
 
-              // --- Carrusel de destacadas (Timer + PageController) ---
-              SizedBox(
-                height: 220,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: PageView.builder(
-                    controller: _featuredCtrl,
-                    itemCount: _featured.length,
-                    padEnds: false,
-                    onPageChanged: (i) => setState(() => _current = i),
-                    itemBuilder: (_, i) => Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: _FeaturedCard(item: _featured[i]),
+                // --- Carrusel de destacadas (Timer + PageController) ---
+                SizedBox(
+                  height: 220,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: PageView.builder(
+                      controller: _featuredCtrl,
+                      itemCount: _featured.length,
+                      padEnds: false,
+                      onPageChanged: (i) => setState(() => _current = i),
+                      itemBuilder: (_, i) => Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: _FeaturedCard(item: _featured[i]),
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              // 👉 Indicador DEBAJO del carrusel
-              const SizedBox(height: 8),
-              Center(
-                child: _CarouselDots(
-                  count: _featured.length,
-                  index: _current,
-                ),
-              ),
-
-
-              const SizedBox(height: 16),
-              const _SectionTitle(text: 'Convocatorias'),
-              const SizedBox(height: 10),
-
-              ..._calls.map(
-                (c) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _CallListTile(
-                    item: c,
-                    onTap: () {
-                      // context.go('/convocatorias/detalle');
-                    },
+                // 👉 Indicador DEBAJO del carrusel
+                const SizedBox(height: 8),
+                Center(
+                  child: _CarouselDots(
+                    count: _featured.length,
+                    index: _current,
                   ),
                 ),
-              ),
-            ],
+
+
+                const SizedBox(height: 16),
+                const _SectionTitle(text: 'Convocatorias'),
+                const SizedBox(height: 10),
+
+                ..._calls.map(
+                  (c) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: _CallListTile(
+                      item: c,
+                      onTap: () {
+                        // context.go('/convocatorias/detalle');
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

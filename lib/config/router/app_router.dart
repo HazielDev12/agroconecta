@@ -1,26 +1,33 @@
 import 'package:agroconecta/presentation/screens/screens.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
 
 // GoRouter configuration
-final appRouter = GoRouter(
+final GoRouter appRouter = GoRouter(
+  debugLogDiagnostics: kDebugMode,
   initialLocation: '/login',
   routes: [
-    GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
-    GoRoute(path: '/home', builder: (context, state) => HomePage()),
-    GoRoute(path: '/convocatorias', builder: (context, state) => ConvocatoriaPage()),
+    // Evita "no routes for location: /"
+    GoRoute(
+      path: '/',
+      redirect: (_, __) => '/home',
+    ),
+
+    GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+    GoRoute(path: '/home', builder:  (_, __) => const HomePage()),
+    GoRoute(path: '/convocatorias', builder: (_, __) => const ConvocatoriaPage()),
   ],
 
-    // Página de error personalizada
-  errorBuilder: (context, state) => NotFoundScreen(error: state.error),
-
+  // Página de error personalizada
+  errorBuilder: (context, state) =>
+      NotFoundScreen(error: state.error, currentLocation: state.uri.toString()),
 );
 
 class NotFoundScreen extends StatelessWidget {
   final Exception? error;
-  const NotFoundScreen({super.key, this.error});
+  final String? currentLocation; // 👈 la ubicación actual viene del errorBuilder
+  const NotFoundScreen({super.key, this.error, this.currentLocation});
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +35,24 @@ class NotFoundScreen extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        context.goNamed('home'); // botón físico back → Home
-        return false;
+        final router = GoRouter.of(context);
+
+        // 1) Si hay historial, hacemos pop
+        if (router.canPop()) {
+          router.pop();
+          return false;
+        }
+
+        // 2) Si no hay historial y NO estamos en /home, vamos a /home
+        final loc = currentLocation ?? // preferimos la pasada por errorBuilder
+            router.routeInformationProvider.value.location; // fallback compatible
+        if (loc != '/home') {
+          router.go('/home');
+          return false;
+        }
+
+        // 3) Ya estamos en /home y no hay historial -> salir de la app
+        return true;
       },
       child: Scaffold(
         backgroundColor: cs.surface,
@@ -37,7 +60,14 @@ class NotFoundScreen extends StatelessWidget {
           title: const Text('Página no encontrada'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.goNamed('home'), // flecha → Home
+            onPressed: () {
+              final router = GoRouter.of(context);
+              if (router.canPop()) {
+                router.pop();
+              } else {
+                router.go('/home');
+              }
+            },
           ),
         ),
         body: Center(
@@ -58,13 +88,11 @@ class NotFoundScreen extends StatelessWidget {
                 Text(
                   (error?.toString() ?? 'Ruta inválida o eliminada.'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: cs.onSurface.withValues(alpha: .7),
-                  ),
+                  style: TextStyle(color: cs.onSurface.withValues(alpha: .7)),
                 ),
                 const SizedBox(height: 20),
                 FilledButton(
-                  onPressed: () => context.go('/home'),
+                  onPressed: () => GoRouter.of(context).go('/home'),
                   child: const Text('Ir al inicio'),
                 ),
               ],
