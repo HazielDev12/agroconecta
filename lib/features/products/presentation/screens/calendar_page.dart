@@ -8,21 +8,31 @@ enum EventType { evento, convocatoria, taller, curso, feria }
 
 Color typeColor(EventType t, ColorScheme cs) {
   switch (t) {
-    case EventType.evento:        return colorList[0];
-    case EventType.convocatoria:  return Colors.teal;
-    case EventType.taller:        return Colors.amber.shade700;
-    case EventType.curso:         return Colors.blue;
-    case EventType.feria:         return Colors.pink.shade400;
+    case EventType.evento:
+      return colorList[0];
+    case EventType.convocatoria:
+      return Colors.teal;
+    case EventType.taller:
+      return Colors.amber.shade700;
+    case EventType.curso:
+      return Colors.blue;
+    case EventType.feria:
+      return Colors.pink.shade400;
   }
 }
 
 String typeLabel(EventType t) {
   switch (t) {
-    case EventType.evento:        return 'Evento';
-    case EventType.convocatoria:  return 'Convocatoria';
-    case EventType.taller:        return 'Taller';
-    case EventType.curso:         return 'Curso';
-    case EventType.feria:         return 'Feria';
+    case EventType.evento:
+      return 'Evento';
+    case EventType.convocatoria:
+      return 'Convocatoria';
+    case EventType.taller:
+      return 'Taller';
+    case EventType.curso:
+      return 'Curso';
+    case EventType.feria:
+      return 'Feria';
   }
 }
 
@@ -56,7 +66,6 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _focusedDay;
   DateTime? _selectedDay;
 
-  // --- Demo data (reemplaza por tu backend) ---
   late final List<CalEvent> _all;
   late final Map<DateTime, List<CalEvent>> _byDay;
 
@@ -68,9 +77,9 @@ class _CalendarPageState extends State<CalendarPage> {
     _selectedDay = _today;
 
     _all = <CalEvent>[
-      // --- Próximos (fechas relativas al día actual) ---
+      // --- Próximos (relativos a hoy) ---
       CalEvent(
-        date: _today.add(const Duration(days: 1)), // Mañana
+        date: _today.add(const Duration(days: 1)),
         title: 'Jornada de sanidad vegetal',
         subtitle: 'Próximo · Mañana · 10:00 a. m.',
         location: 'José María Morelos, Q. Roo',
@@ -101,7 +110,7 @@ class _CalendarPageState extends State<CalendarPage> {
         image: 'assets/banners/banner_1.jpg',
       ),
 
-      // --- Fijos (ejemplos con fechas específicas) ---
+      // --- Fijos (fechas específicas) ---
       CalEvent(
         date: DateTime(2025, 8, 17, 9, 00),
         title: 'Capacitación de riego',
@@ -132,7 +141,7 @@ class _CalendarPageState extends State<CalendarPage> {
         location: 'Quintana Roo',
         type: EventType.convocatoria,
       ),
-        CalEvent(
+      CalEvent(
         date: DateTime(2025, 9, 5, 10, 00),
         title: 'Feria Agro 2025',
         subtitle: 'Vie 05 Sep · 10:00 a. m. — Stands y encuentros',
@@ -161,22 +170,29 @@ class _CalendarPageState extends State<CalendarPage> {
 
   String _headerDate(DateTime d) {
     const months = [
-      'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-      'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre'
     ];
-    const wd = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+    const wd = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     return '${wd[(d.weekday + 5) % 7]}, ${d.day} ${months[d.month - 1]}';
-    // (weekday: 1=Mon ⇒ index 0)
   }
 
   Iterable<CalEvent> get _upcoming =>
-      _all.where((e) => _day(e.date).isAfter(_today) || _day(e.date) == _today)
-          .toList()
+      _all.where((e) => _day(e.date).isAfter(_today) || _day(e.date) == _today).toList()
         ..sort((a, b) => a.date.compareTo(b.date));
 
   Iterable<CalEvent> get _past =>
-      _all.where((e) => _day(e.date).isBefore(_today))
-          .toList()
+      _all.where((e) => _day(e.date).isBefore(_today)).toList()
         ..sort((a, b) => b.date.compareTo(a.date));
 
   @override
@@ -193,163 +209,181 @@ class _CalendarPageState extends State<CalendarPage> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlay,
-      child: Scaffold(
-        backgroundColor: cs.surface,
-        appBar: AppBar(
-          backgroundColor: colorList[2],
-          elevation: 0,
-          centerTitle: false,
-          title: const Text(
-            'Calendario de Eventos',
-            style: TextStyle(fontWeight: FontWeight.w800),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              final r = GoRouter.of(context);
-              if (r.canPop()) r.pop(); else r.go('/home');
-            },
-          ),
-          actions: [
-            IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
-          ],
-        ),
-        body: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-          children: [
-            Text(
-              _headerDate(_selectedDay ?? _focusedDay),
-              style: TextStyle(
-                color: cs.onSurface.withValues(alpha: .9),
-                fontWeight: FontWeight.w800,
-                fontSize: 18,
-              ),
+      // 👇 Manejo del botón físico/gesto "Atrás"
+      child: WillPopScope(
+        onWillPop: () async {
+          final r = GoRouter.of(context);
+          if (r.canPop()) {
+            r.pop();
+          } else {
+            r.go('/home');
+          }
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/home');
+          }
+          return false; // ya manejamos la navegación
+        },
+        child: Scaffold(
+          backgroundColor: cs.surface,
+          appBar: AppBar(
+            backgroundColor: colorList[2],
+            elevation: 0,
+            centerTitle: false,
+            title: const Text(
+              'Calendario de Eventos',
+              style: TextStyle(fontWeight: FontWeight.w800),
             ),
-            const SizedBox(height: 8),
-
-            // ---------- Calendar ----------
-            Card(
-              elevation: 0,
-              color: cs.surfaceContainerHighest,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                final r = GoRouter.of(context);
+                if (r.canPop()) r.pop();
+                else r.go('/home');
+              },
+            ),
+            actions: [
+              IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
+            ],
+          ),
+          body: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+            children: [
+              Text(
+                _headerDate(_selectedDay ?? _focusedDay),
+                style: TextStyle(
+                  color: cs.onSurface.withValues(alpha: .9),
+                  fontWeight: FontWeight.w800,
+                  fontSize: 18,
+                ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 6, 8, 10),
-                child: TableCalendar<CalEvent>(
-                  locale: 'es_MX',
-                  firstDay: DateTime.utc(2024, 1, 1),
-                  lastDay: DateTime.utc(2026, 12, 31),
-                  focusedDay: _focusedDay,
-                  startingDayOfWeek: StartingDayOfWeek.monday,
-                  calendarFormat: CalendarFormat.month,
-                  availableGestures: AvailableGestures.horizontalSwipe,
-                  selectedDayPredicate: (d) =>
-                      _selectedDay != null && _day(d) == _day(_selectedDay!),
-                  onDaySelected: (sel, foc) {
-                    setState(() {
-                      _selectedDay = _day(sel);
-                      _focusedDay = foc;
-                    });
-                  },
-                  onPageChanged: (foc) => _focusedDay = foc,
-                  eventLoader: _eventsFor,
-                  headerStyle: HeaderStyle(
-                    titleCentered: true,
-                    formatButtonVisible: false,
-                    titleTextStyle: TextStyle(
-                      color: cs.onSurface,
-                      fontWeight: FontWeight.w800,
-                    ),
-                    leftChevronIcon:
-                        Icon(Icons.chevron_left, color: cs.onSurface),
-                    rightChevronIcon:
-                        Icon(Icons.chevron_right, color: cs.onSurface),
-                  ),
-                  daysOfWeekStyle: DaysOfWeekStyle(
-                    weekdayStyle: TextStyle(
-                      color: cs.onSurface.withValues(alpha: .8),
-                      fontWeight: FontWeight.w700,
-                    ),
-                    weekendStyle: TextStyle(
-                      color: cs.onSurface.withValues(alpha: .8),
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  calendarStyle: CalendarStyle(
-                    outsideDaysVisible: false,
-                    todayDecoration: BoxDecoration(
-                      border: Border.all(color: colorList[0]),
-                      shape: BoxShape.circle,
-                    ),
-                    selectedDecoration: BoxDecoration(
-                      color: colorList[0],
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  calendarBuilders: CalendarBuilders(
-                    markerBuilder: (context, day, events) {
-                      if (events.isEmpty) return const SizedBox.shrink();
-                      // Máx 4 puntitos por día
-                      final markers = (events as List<CalEvent>)
-                          .take(4)
-                          .map((e) => _Dot(color: typeColor(e.type, cs)))
-                          .toList();
-                      return Positioned(
-                        bottom: 4,
-                        left: 0,
-                        right: 0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: markers
-                              .expand((w) => [w, const SizedBox(width: 3)])
-                              .toList()
-                            ..removeLast(),
-                        ),
-                      );
+              const SizedBox(height: 8),
+
+              // ---------- Calendar ----------
+              Card(
+                elevation: 0,
+                color: cs.surfaceContainerHighest,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 6, 8, 10),
+                  child: TableCalendar<CalEvent>(
+                    locale: 'es_MX',
+                    firstDay: DateTime.utc(2024, 1, 1),
+                    lastDay: DateTime.utc(2026, 12, 31),
+                    focusedDay: _focusedDay,
+                    startingDayOfWeek: StartingDayOfWeek.monday,
+                    calendarFormat: CalendarFormat.month,
+                    availableGestures: AvailableGestures.horizontalSwipe,
+                    selectedDayPredicate: (d) =>
+                        _selectedDay != null && _day(d) == _day(_selectedDay!),
+                    onDaySelected: (sel, foc) {
+                      setState(() {
+                        _selectedDay = _day(sel);
+                        _focusedDay = foc;
+                      });
                     },
+                    onPageChanged: (foc) => _focusedDay = foc,
+                    eventLoader: _eventsFor,
+                    headerStyle: HeaderStyle(
+                      titleCentered: true,
+                      formatButtonVisible: false,
+                      titleTextStyle: TextStyle(
+                        color: cs.onSurface,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      leftChevronIcon:
+                          Icon(Icons.chevron_left, color: cs.onSurface),
+                      rightChevronIcon:
+                          Icon(Icons.chevron_right, color: cs.onSurface),
+                    ),
+                    daysOfWeekStyle: DaysOfWeekStyle(
+                      weekdayStyle: TextStyle(
+                        color: cs.onSurface.withValues(alpha: .8),
+                        fontWeight: FontWeight.w700,
+                      ),
+                      weekendStyle: TextStyle(
+                        color: cs.onSurface.withValues(alpha: .8),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    calendarStyle: CalendarStyle(
+                      outsideDaysVisible: false,
+                      todayDecoration: BoxDecoration(
+                        border: Border.all(color: colorList[0]),
+                        shape: BoxShape.circle,
+                      ),
+                      selectedDecoration: BoxDecoration(
+                        color: colorList[0],
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    calendarBuilders: CalendarBuilders(
+                      markerBuilder: (context, day, events) {
+                        if (events.isEmpty) return const SizedBox.shrink();
+                        // Máx 4 puntitos por día
+                        final markers = (events as List<CalEvent>)
+                            .take(4)
+                            .map((e) => _Dot(color: typeColor(e.type, cs)))
+                            .toList();
+                        return Positioned(
+                          bottom: 4,
+                          left: 0,
+                          right: 0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: markers
+                                .expand((w) => [w, const SizedBox(width: 3)])
+                                .toList()
+                              ..removeLast(),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            const SizedBox(height: 18),
+              const SizedBox(height: 18),
 
-            // ---------- Eventos del día ----------
-            if (selectedEvents.isNotEmpty) ...[
-              _SectionTitle(text: 'Eventos de este día'),
+              // ---------- Eventos del día ----------
+              if (selectedEvents.isNotEmpty) ...[
+                _SectionTitle(text: 'Eventos de este día'),
+                const SizedBox(height: 8),
+                ...selectedEvents.map((e) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: _EventCard(event: e),
+                    )),
+                const SizedBox(height: 16),
+              ],
+
+              // ---------- Próximos ----------
+              _SectionTitle(text: 'Próximos'),
               const SizedBox(height: 8),
-              ...selectedEvents.map((e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _EventCard(event: e),
-                  )),
+              if (_upcoming.isEmpty)
+                _EmptyRow(text: 'No hay próximos eventos')
+              else
+                ..._upcoming.map((e) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: _EventCard(event: e),
+                    )),
+
               const SizedBox(height: 16),
+
+              // ---------- Pasados ----------
+              _SectionTitle(text: 'Pasados'),
+              const SizedBox(height: 8),
+              if (_past.isEmpty)
+                _EmptyRow(text: 'Aún no hay eventos pasados')
+              else
+                ..._past.map((e) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: _EventCard(event: e),
+                    )),
             ],
-
-            // ---------- Próximos ----------
-            _SectionTitle(text: 'Próximos'),
-            const SizedBox(height: 8),
-            if (_upcoming.isEmpty)
-              _EmptyRow(text: 'No hay próximos eventos')
-            else
-              ..._upcoming.map((e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _EventCard(event: e),
-                  )),
-
-            const SizedBox(height: 16),
-
-            // ---------- Pasados ----------
-            _SectionTitle(text: 'Pasados'),
-            const SizedBox(height: 8),
-            if (_past.isEmpty)
-              _EmptyRow(text: 'Aún no hay eventos pasados')
-            else
-              ..._past.map((e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _EventCard(event: e),
-                  )),
-          ],
+          ),
         ),
       ),
     );
@@ -363,8 +397,11 @@ class _Dot extends StatelessWidget {
   const _Dot({required this.color});
   @override
   Widget build(BuildContext context) {
-    return Container(width: 6, height: 6, decoration: BoxDecoration(
-      color: color, shape: BoxShape.circle));
+    return Container(
+      width: 6,
+      height: 6,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
   }
 }
 
@@ -433,10 +470,11 @@ class _EventCard extends StatelessWidget {
           ),
         );
       }
-      // Pill de fecha DD/MES
+      // Pill de fecha (DD / MES)
       final d = event.date;
       final mon = [
-        'ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'
+        'ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN',
+        'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'
       ][d.month - 1];
       return Container(
         width: 56,
@@ -448,27 +486,31 @@ class _EventCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('${d.day}',
-                style: TextStyle(
-                  color: tagColor,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 18,
-                  height: .9,
-                )),
-            Text(mon,
-                style: TextStyle(
-                  color: tagColor,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 11,
-                  letterSpacing: .5,
-                )),
+            Text(
+              '${d.day}',
+              style: TextStyle(
+                color: tagColor,
+                fontWeight: FontWeight.w900,
+                fontSize: 18,
+                height: .9,
+              ),
+            ),
+            Text(
+              mon,
+              style: TextStyle(
+                color: tagColor,
+                fontWeight: FontWeight.w800,
+                fontSize: 11,
+                letterSpacing: .5,
+              ),
+            ),
           ],
         ),
       );
     }
 
     return Material(
-      color: Theme.of(context).colorScheme.surface,
+      color: cs.surface,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         decoration: BoxDecoration(
@@ -536,7 +578,8 @@ class _EventCard extends StatelessWidget {
                     Row(
                       children: [
                         Icon(Icons.place,
-                            size: 16, color: cs.onSurface.withValues(alpha: .6)),
+                            size: 16,
+                            color: cs.onSurface.withValues(alpha: .6)),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
