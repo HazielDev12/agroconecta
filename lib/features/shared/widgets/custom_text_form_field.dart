@@ -33,7 +33,7 @@ class CustomTextFormField extends StatelessWidget {
         color: Color.fromARGB(255, 254, 254, 254),
         width: 1.2,
       ),
-      borderRadius: BorderRadius.circular(40),
+      borderRadius: BorderRadius.circular(15),
     );
 
     return Container(
@@ -73,7 +73,9 @@ class CustomTextFormField extends StatelessWidget {
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
-          enabledBorder: border,
+          enabledBorder: border.copyWith(
+            borderSide: BorderSide(color: colors.primary, width: 1.2),
+          ),
           focusedBorder: border.copyWith(
             borderSide: BorderSide(color: colors.primary, width: 1.8),
             borderRadius: BorderRadius.circular(14),
