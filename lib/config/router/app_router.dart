@@ -25,7 +25,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/calendario',
-      builder: (_, _) => const ConvocatoriaPage(),
+      builder: (_, _) => const CalendarPage(),
     ),
   ],
 
