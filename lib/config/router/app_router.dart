@@ -23,6 +23,10 @@ final GoRouter appRouter = GoRouter(
       path: '/convocatorias',
       builder: (_, _) => const ConvocatoriaPage(),
     ),
+    GoRoute(
+      path: '/calendario',
+      builder: (_, _) => const ConvocatoriaPage(),
+    ),
   ],
 
   // Página de error personalizada
