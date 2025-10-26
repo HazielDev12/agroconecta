@@ -11,13 +11,13 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(body: const _LoginView()),
+      child: Scaffold(body: const _LoginForm()),
     );
   }
 }
 
-class _LoginView extends StatelessWidget {
-  const _LoginView();
+class _LoginForm extends StatelessWidget {
+  const _LoginForm();
 
   @override
   Widget build(BuildContext context) {
