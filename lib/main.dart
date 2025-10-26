@@ -2,10 +2,11 @@ import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:agroconecta/config/router/app_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 void main() {
-  runApp(const MainApp());
+  runApp(const ProviderScope(child:MainApp()));
 }
 
 class MainApp extends StatelessWidget {
