@@ -1,4 +1,5 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
+import 'package:agroconecta/features/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -207,21 +208,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const SizedBox(height: 12),
 
                     // Correo
-                    TextFormField(
-                      controller: _correoCtrl,
+                    CustomTextFormField(
+                      label: 'Correo Electrónico',
                       keyboardType: TextInputType.emailAddress,
-                      decoration: _inputDeco(
-                        'Correo Electrónico',
-                        hint: 'ejemplo@correo.com',
-                      ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) return 'Ingresa tu correo';
-                        final reg = RegExp(
-                          r'^[\w\.\-]+@([\w\-]+\.)+[\w\-]{2,4}$',
-                        );
-                        if (!reg.hasMatch(v)) return 'Correo inválido';
-                        return null;
-                      },
+                      suffixIcon: Icons.email_outlined,
                     ),
 
                     const SizedBox(height: 16),
