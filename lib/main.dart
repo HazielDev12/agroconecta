@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:agroconecta/config/router/app_router.dart';
 import 'package:agroconecta/config/theme/app_theme.dart';
 
-void main() {
   runApp(const MainApp());
 }
 
