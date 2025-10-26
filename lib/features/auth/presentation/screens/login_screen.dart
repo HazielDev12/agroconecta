@@ -1,5 +1,7 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
+import 'package:agroconecta/features/auth/presentation/providers/providers.dart';
 import 'package:agroconecta/features/shared/widgets/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -59,12 +61,13 @@ class _LoginCard extends StatelessWidget {
   }
 }
 
-class _LoginForm extends StatelessWidget {
+class _LoginForm extends ConsumerWidget {
   const _LoginForm();
 
   @override
-  Widget build(BuildContext context) {
-    final textStyles = Theme.of(context).textTheme;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loginForm = ref.watch(loginFormProvider);
+    // final textStyles = Theme.of(context).textTheme;
 
     return Form(
       //Contenido Centrado
@@ -81,19 +84,34 @@ class _LoginForm extends StatelessWidget {
             'Tecnología que siembra futuro.',
             style: TextStyle(fontSize: 14, color: Colors.black54),
           ),
-
           const SizedBox(height: 30),
 
           //Campo de usuario/correo
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
+            suffixIcon: Icons.email_outlined,
+            onChanged: (value) =>
+                ref.read(loginFormProvider.notifier).onEmailChange(value),
+            errorMessage: loginForm.isFromPosted
+                ? loginForm.email.errorMessage
+                : null,
           ),
           const SizedBox(height: 16),
 
           //Campo contraseña
-          const CustomTextFormField(label: 'Contraseña', obscureText: true),
+          CustomTextFormField(
+            label: 'Contraseña',
+            obscureText: true,
+            suffixIcon: Icons.key,
+            onChanged: (value) =>
+                ref.read(loginFormProvider.notifier).onPasswordChange(value),
+            errorMessage: loginForm.isFromPosted
+                ? loginForm.password.errorMessage
+                : null,
+          ),
           const SizedBox(height: 10),
+
           //Links inferiores
           Align(
             alignment: Alignment.centerRight,
@@ -109,26 +127,19 @@ class _LoginForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
+
           //Boton principal
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorList[0],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(10),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              child: const Text(
-                'Iniciar Sesión',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
+            child: CustomFilledButton(
+              onPressed: () {
+                ref.read(loginFormProvider.notifier).onFormSubmit();
+              },
+              text: 'Iniciar Sesión',
             ),
           ),
-
           const SizedBox(height: 20),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
