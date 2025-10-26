@@ -1,17 +1,19 @@
-import 'package:agroconecta/presentation/screens/forgot_password_screen.dart';
-import 'package:agroconecta/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
+import 'package:agroconecta/presentation/screens/screens.dart';
+import 'package:agroconecta/presentation/screens/not_found.dart';
 
-// GoRouter configuration
-final appRouter = GoRouter(
+final GoRouter appRouter = GoRouter(
+  debugLogDiagnostics: true,
   initialLocation: '/login',
   routes: [
-    GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
-    GoRoute(path: '/home', builder: (context, state) => HomePage()),
-    GoRoute(path: '/sign-up', builder: (context, state) => SignUpScreen()),
-    GoRoute(
-      path: '/forgot-password',
-      builder: (context, state) => ForgotPasswordScreen(),
-    ),
+    GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+    GoRoute(path: '/home', builder:  (_, __) => const HomePage()),
+    GoRoute(path: '/convocatorias', builder: (_, __) => const ConvocatoriaPage()),
+    // agrega aquí más rutas…
   ],
+
+  errorBuilder: (context, state) => NotFoundScreen(
+    error: state.error,
+    location: state.uri.toString(),
+  ),
 );
