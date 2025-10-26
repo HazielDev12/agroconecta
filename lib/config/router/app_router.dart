@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
 /// Configuración de GoRouter (sin navigatorBuilder/builder aquí)
 final GoRouter appRouter = GoRouter(
   debugLogDiagnostics: kDebugMode,
@@ -12,17 +11,17 @@ final GoRouter appRouter = GoRouter(
 
   routes: [
     // Evita "no routes for location: /"
-    GoRoute(path: '/', redirect: (_, __) => '/home'),
-
-    GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
-    GoRoute(path: '/home', builder: (_, __) => const HomePage()),
-    GoRoute(
-      path: '/convocatorias',
-      builder: (_, __) => const ConvocatoriaPage(),
-    ),
+    GoRoute(path: '/', redirect: (_, _) => '/home'),
+    GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
     GoRoute(
       path: '/forgot-password',
       builder: (context, state) => ForgotPasswordScreen(),
+    ),
+    GoRoute(path: '/sign-up', builder: (_, _) => const SignUpScreen()),
+    GoRoute(path: '/home', builder: (_, _) => const HomePage()),
+    GoRoute(
+      path: '/convocatorias',
+      builder: (_, _) => const ConvocatoriaPage(),
     ),
   ],
 
