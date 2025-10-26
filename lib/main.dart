@@ -32,7 +32,7 @@ class MainApp extends StatelessWidget {
       // fuerza español MX en toda la app:
       // locale: const Locale('es', 'MX'),
       
-/*       // 👇 Parche global para el botón físico/gesto “Atrás”
+      // 👇 Parche global para el botón físico/gesto “Atrás”
       builder: (context, child) {
         return WillPopScope(
           onWillPop: () async {
@@ -56,7 +56,7 @@ class MainApp extends StatelessWidget {
           },
           child: child ?? const SizedBox.shrink(),
         );
-      }, */
+      },
     );
   }
 }

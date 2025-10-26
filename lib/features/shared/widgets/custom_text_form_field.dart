@@ -8,6 +8,8 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
+  final IconData? prefixIcon;
+  final IconData? suffixIcon;
 
   const CustomTextFormField({
     super.key,
@@ -18,6 +20,8 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.onChanged,
     this.validator,
+    this.prefixIcon,
+    this.suffixIcon,
   });
 
   @override
@@ -25,17 +29,17 @@ class CustomTextFormField extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     final border = OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.transparent),
+      borderSide: const BorderSide(
+        color: Color.fromARGB(255, 254, 254, 254),
+        width: 1.2,
+      ),
       borderRadius: BorderRadius.circular(40),
     );
 
-    const borderRadius = Radius.circular(15);
-
     return Container(
-      // padding: const EdgeInsets.only(bottom: 0, top: 15),
-      decoration: BoxDecoration(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      /*       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.all(borderRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.06),
@@ -43,26 +47,42 @@ class CustomTextFormField extends StatelessWidget {
             offset: const Offset(0, 5),
           ),
         ],
-      ),
+      ), */
       child: TextFormField(
         onChanged: onChanged,
         validator: validator,
         obscureText: obscureText,
         keyboardType: keyboardType,
-        style: const TextStyle(fontSize: 20, color: Colors.black54),
+        cursorColor: colors.primary,
+        style: const TextStyle(fontSize: 16, color: Colors.black87),
         decoration: InputDecoration(
-          floatingLabelStyle: const TextStyle(
-            color: Colors.black45,
+          filled: true,
+          fillColor: Colors.grey.shade50,
+          prefixIcon: prefixIcon != null
+              ? Icon(prefixIcon, color: colors.primary.withValues(alpha: 0.8))
+              : null,
+          suffixIcon: suffixIcon != null
+              ? Icon(suffixIcon, color: colors.primary.withValues(alpha: 0.8))
+              : null,
+          labelStyle: TextStyle(
+            color: Colors.grey.shade700,
+            fontWeight: FontWeight.w500,
+          ),
+          floatingLabelStyle: TextStyle(
+            color: colors.primary,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
           enabledBorder: border,
-          focusedBorder: border,
+          focusedBorder: border.copyWith(
+            borderSide: BorderSide(color: colors.primary, width: 1.8),
+            borderRadius: BorderRadius.circular(14),
+          ),
           errorBorder: border.copyWith(
-            borderSide: BorderSide(color: Colors.red.shade800),
+            borderSide: BorderSide(color: Colors.red.shade800, width: 1.5),
           ),
           focusedErrorBorder: border.copyWith(
-            borderSide: BorderSide(color: Colors.red.shade800),
+            borderSide: BorderSide(color: Colors.red.shade800, width: 1.5),
           ),
           isDense: true,
           label: label != null ? Text(label!) : null,
