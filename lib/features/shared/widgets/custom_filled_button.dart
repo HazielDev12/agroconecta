@@ -14,17 +14,13 @@ class CustomFilledButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const radius = Radius.circular(10);
+    // const radius = Radius.circular(10);
 
     return FilledButton(
       style: FilledButton.styleFrom(
         backgroundColor: buttonColor,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: radius,
-            bottomRight: radius,
-            topLeft: radius,
-          ),
+          borderRadius: BorderRadius.all(Radius.circular(25)),
         ),
       ),
 
