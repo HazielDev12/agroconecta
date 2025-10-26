@@ -3,8 +3,7 @@ import 'package:agroconecta/features/products/presentation/screens/screens.dart'
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:agroconecta/presentation/screens/screens.dart';
-import 'package:agroconecta/presentation/screens/not_found.dart';
+
 
 /// Configuración de GoRouter (sin navigatorBuilder/builder aquí)
 final GoRouter appRouter = GoRouter(

@@ -5,8 +5,8 @@ import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-
-  runApp(const Provider(child: MainApp()));
+void main() {
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -25,13 +25,10 @@ class MainApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('es', 'MX'),
-        Locale('en', 'US'),
-      ],
+      supportedLocales: const [Locale('es', 'MX'), Locale('en', 'US')],
       // fuerza español MX en toda la app:
       // locale: const Locale('es', 'MX'),
-      
+
       // 👇 Parche global para el botón físico/gesto “Atrás”
       builder: (context, child) {
         return WillPopScope(
