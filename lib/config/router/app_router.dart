@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 /// Configuración de GoRouter (sin navigatorBuilder/builder aquí)
 final GoRouter appRouter = GoRouter(
   debugLogDiagnostics: kDebugMode,
-  initialLocation: '/login',
+  initialLocation: '/home',
 
   routes: [
     // Evita "no routes for location: /"
@@ -22,6 +22,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/convocatorias',
       builder: (_, _) => const ConvocatoriaPage(),
+    ),
+    GoRoute(
+      path: '/calendario',
+      builder: (_, _) => const CalendarPage(),
     ),
   ],
 

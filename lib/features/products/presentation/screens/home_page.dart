@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
-  final String userName;
+  final String userName; 
   final String zoneName;
 
   const HomePage({
@@ -167,14 +167,14 @@ class _HomePageState extends State<HomePage> {
                     iconPath: 'assets/icons/calendario.png',
                     title: 'Ver eventos',
                     subtitle: 'Calendario',
-                    onTap: () => context.go('/login'),
+                    onTap: () => context.go('/calendario'),
                   ),
                   _QuickAction(
                     color: colorList[0],
                     iconPath: 'assets/icons/mentor.png',
                     title: 'Buscar mentor',
                     subtitle: 'Por zona',
-                    onTap: () {},
+                    onTap: () => context.go('/login'),
                   ),
                   _QuickAction(
                     color: colorList[0],
