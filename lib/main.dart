@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:agroconecta/config/router/app_router.dart';
 import 'package:agroconecta/config/theme/app_theme.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 
   runApp(const Provider(child: MainApp()));
 }
