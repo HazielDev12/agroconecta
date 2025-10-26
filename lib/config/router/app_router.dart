@@ -1,5 +1,4 @@
-import 'package:agroconecta/presentation/screens/forgot_password_screen.dart';
-import 'package:agroconecta/presentation/screens/screens.dart';
+import 'package:agroconecta/auth/presentation/screens/screens.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +17,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
     GoRoute(path: '/home', builder:  (_, __) => const HomePage()),
     GoRoute(path: '/convocatorias', builder: (_, __) => const ConvocatoriaPage()),
+    GoRoute(path: '/forgot-password',builder: (context, state) => ForgotPasswordScreen(),),
   ],
 
   // Página de error personalizada
