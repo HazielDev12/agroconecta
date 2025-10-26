@@ -34,5 +34,14 @@ class AppTheme {
       ),
       titleSmall: GoogleFonts.montserratAlternates().copyWith(fontSize: 20),
     ),
+
+    //Buttons
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        textStyle: WidgetStatePropertyAll(
+          GoogleFonts.montserrat().copyWith(fontWeight: FontWeight.w700),
+        ),
+      ),
+    ),
   );
 }
