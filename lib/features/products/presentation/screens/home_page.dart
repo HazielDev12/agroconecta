@@ -6,6 +6,10 @@ import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+// ========= NUEVO: usa las mismas destacadas que convocatorias.dart =========
+import 'convocatoria_card.dart';
+import 'convocatoria_data.dart';
+
 class HomePage extends StatefulWidget {
   final String userName; 
   final String zoneName;
@@ -24,6 +28,8 @@ class _HomePageState extends State<HomePage> {
   // --- Carrusel ---
   final PageController _pageCtrl = PageController(viewportFraction: 1.0);
 
+  // (Se conserva tu estructura; ya no usamos esta lista porque ahora
+  //  leemos de featuredConvocatorias. La dejo para no romper nada.)
   final List<_BannerItem> _banners = const <_BannerItem>[
     _BannerItem(
       image: 'assets/banners/banner_1.jpg',
@@ -45,18 +51,23 @@ class _HomePageState extends State<HomePage> {
   int _current = 0;
   Timer? _autoSlide;
 
+  int get _featuredLen => featuredConvocatorias.length; // NUEVO
+
   @override
   void initState() {
     super.initState();
-    _autoSlide = Timer.periodic(const Duration(seconds: 5), (_) {
-      if (!mounted || !_pageCtrl.hasClients) return;
-      final next = (_current + 1) % _banners.length;
-      _pageCtrl.animateToPage(
-        next,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOut,
-      );
-    });
+    // ======== NUEVO: auto-slide basado en destacadas reales ========
+    if (_featuredLen > 0) {
+      _autoSlide = Timer.periodic(const Duration(seconds: 5), (_) {
+        if (!mounted || !_pageCtrl.hasClients) return;
+        final next = (_current + 1) % _featuredLen;
+        _pageCtrl.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   @override
@@ -79,6 +90,9 @@ class _HomePageState extends State<HomePage> {
       statusBarBrightness: isDark ? Brightness.dark : Brightness.light, // iOS
     );
 
+    // ======== NUEVO: alias corto ========
+    final featured = featuredConvocatorias;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlay,
       child: Scaffold(
@@ -100,7 +114,7 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 8),
 
-              // --- Carrusel ---
+              // --- Carrusel (AHORA con destacadas reales) ---
               SizedBox(
                 height: 190,
                 child: ClipRRect(
@@ -110,33 +124,40 @@ class _HomePageState extends State<HomePage> {
                       PageView.builder(
                         controller: _pageCtrl,
                         onPageChanged: (i) => setState(() => _current = i),
-                        itemCount: _banners.length,
-                        itemBuilder: (_, i) => _BannerCard(item: _banners[i]),
+                        itemCount: featured.isNotEmpty ? featured.length : 0, // NUEVO
+                        itemBuilder: (_, i) {
+                          final c = featured[i];
+                          return GestureDetector(
+                            onTap: () => context.go('/convocatorias'), // NUEVO
+                            child: ConvocatoriaHeroCard(c: c),          // NUEVO
+                          );
+                        },
                       ),
                       // Dots
-                      Positioned(
-                        bottom: 10,
-                        left: 0,
-                        right: 0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(_banners.length, (i) {
-                            final isActive = i == _current;
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              margin: const EdgeInsets.symmetric(horizontal: 3),
-                              width: isActive ? 22 : 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(
-                                  alpha: isActive ? 1 : .5,
+                      if (featured.isNotEmpty) // NUEVO: evita error si lista vacía
+                        Positioned(
+                          bottom: 10,
+                          left: 0,
+                          right: 0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(featured.length, (i) {
+                              final isActive = i == _current;
+                              return AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                margin: const EdgeInsets.symmetric(horizontal: 3),
+                                width: isActive ? 22 : 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(
+                                    alpha: isActive ? 1 : .5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(100),
                                 ),
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                            );
-                          }),
+                              );
+                            }),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -203,7 +224,7 @@ class _HomePageState extends State<HomePage> {
         ),
 
         // --- Bottom Nav (placeholder, opcional si ya tienes tu Shell) ---
-                bottomNavigationBar: NavigationBar(
+        bottomNavigationBar: NavigationBar(
           selectedIndex: 0,
           onDestinationSelected: (index) {
             switch (index) {
