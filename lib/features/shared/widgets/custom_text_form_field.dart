@@ -12,6 +12,7 @@ class CustomTextFormField extends StatelessWidget {
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final List<TextInputFormatter>? inputFormatters;
+  final TextInputAction? textInputAction;
 
   const CustomTextFormField({
     super.key,
@@ -25,6 +26,7 @@ class CustomTextFormField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.inputFormatters,
+    this.textInputAction,
   });
 
   @override
@@ -52,6 +54,7 @@ class CustomTextFormField extends StatelessWidget {
         ],
       ), */
       child: TextFormField(
+        textInputAction: textInputAction,
         inputFormatters: inputFormatters,
         onChanged: onChanged,
         validator: validator,
