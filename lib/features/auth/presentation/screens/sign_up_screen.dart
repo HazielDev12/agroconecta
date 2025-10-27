@@ -102,11 +102,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).maybePop(),
         ),
-        title: const Text(
-          'Crea tu cuenta',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
-        centerTitle: false,
+        title: const Text('Registro'),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Center(
@@ -187,23 +184,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     _SectionHeader('Información de Contacto'),
                     const SizedBox(height: 10),
 
-                    // Teléfono
-                    TextFormField(
-                      controller: _telefonoCtrl,
+                    CustomTextFormField(
+                      label: 'Número de Teléfono',
                       keyboardType: TextInputType.number,
+                      suffixIcon: Icons.phone_outlined,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(10),
                       ],
-                      decoration: _inputDeco(
-                        'Número de Teléfono',
-                        hint: '10 dígitos',
-                      ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) return 'Ingresa tu número';
-                        if (v.length != 10) return 'Deben ser 10 dígitos';
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 12),
 
