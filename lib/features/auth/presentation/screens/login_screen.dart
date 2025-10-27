@@ -110,7 +110,7 @@ class _LoginForm extends ConsumerWidget {
                 ? loginForm.password.errorMessage
                 : null,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 25),
 
           //Links inferiores
           Align(
