@@ -13,6 +13,9 @@ class CustomTextFormField extends StatelessWidget {
   final IconData? suffixIcon;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputAction? textInputAction;
+  final bool readOnly;
+  final void Function()? onTap;
+  final TextEditingController? controller;
 
   const CustomTextFormField({
     super.key,
@@ -27,6 +30,9 @@ class CustomTextFormField extends StatelessWidget {
     this.suffixIcon,
     this.inputFormatters,
     this.textInputAction,
+    this.readOnly = false,
+    this.onTap,
+    this.controller,
   });
 
   @override
@@ -54,6 +60,11 @@ class CustomTextFormField extends StatelessWidget {
         ],
       ), */
       child: TextFormField(
+        //Para seleccionar la fecha de nacimiento
+        showCursor: readOnly ? false : null,
+        onTap: onTap,
+        controller: controller,
+        //General
         textInputAction: textInputAction,
         inputFormatters: inputFormatters,
         onChanged: onChanged,
