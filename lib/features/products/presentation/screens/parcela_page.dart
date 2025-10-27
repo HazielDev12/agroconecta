@@ -3,24 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:agroconecta/config/theme/app_theme.dart';
-//import 'package:agroconecta/presentation/screens/edit_parcela_page.dart' show ParcelaData;
 
-class ParcelaDetailPage extends StatefulWidget {
+class ParcelaDetailPage extends StatelessWidget {
   const ParcelaDetailPage({super.key});
-
-  @override
-  State<ParcelaDetailPage> createState() => _ParcelaDetailPageState();
-}
-
-class _ParcelaDetailPageState extends State<ParcelaDetailPage> {
-  // Datos mostrados en la pantalla (inicializa con sample o tus valores reales)
-  late ParcelaData _data;
-
-  @override
-  void initState() {
-    super.initState();
-    _data = ParcelaData.sample();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,111 +32,63 @@ class _ParcelaDetailPageState extends State<ParcelaDetailPage> {
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               final r = GoRouter.of(context);
-              if (r.canPop()) r.pop(); else r.go('/home');
+              if (r.canPop()) {
+                r.pop();
+              } else {
+                r.go('/home');
+              }
             },
           ),
-          actions: [
-            IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
-          ],
         ),
         body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          children: [
+          children: const [
             // ---------- MAPA ----------
             _MapCard(),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
 
             // ---------- RESUMEN ----------
             _CropSummaryCard(
-              crop: _data.crop,
-              name: _data.name,
+              crop: 'Maíz',
+              name: 'Mi Parcela',
               id: 'AGRO-QR-00123',
             ),
 
-            const SizedBox(height: 12),
-            Text(
-              'Información Clave',
-              style: TextStyle(
-                color: cs.onSurface.withValues(alpha: .9),
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 8),
+            SizedBox(height: 12),
+            _SectionHeader(text: 'Información Clave'),
+            SizedBox(height: 8),
 
             _InfoTile(
               icon: Icons.square_foot_outlined,
               title: 'Superficie',
-              value: '${_data.hectares.toStringAsFixed(_data.hectares.truncateToDouble() == _data.hectares ? 0 : 2)} Hectáreas',
+              value: '10 Hectáreas',
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             _InfoTile(
               icon: Icons.texture_outlined,
               title: 'Tipo de suelo',
-              value: _data.soilType,
+              value: 'Leptosol',
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             _InfoTile(
               icon: Icons.water_drop_outlined,
               title: 'Sistema de Riego',
-              value: _data.irrigation,
+              value: 'Temporal',
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             _InfoTile(
               icon: Icons.event_outlined,
               title: 'Fecha de siembra',
-              value: '${_data.sowingDate.day.toString().padLeft(2,'0')}/${_data.sowingDate.month.toString().padLeft(2,'0')}/${_data.sowingDate.year}',
+              value: '15 de Junio, 2025',
             ),
 
-            const SizedBox(height: 16),
-            // ---------- SALUD DEL CULTIVO / INDICADORES ----------
-            Text(
-              'Salud del Cultivo',
-              style: TextStyle(
-                color: cs.onSurface.withValues(alpha: .9),
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const _MiniMetricsRow(),
+            SizedBox(height: 16),
+            _SectionHeader(text: 'Salud del Cultivo'),
+            SizedBox(height: 8),
+            _MiniMetricsRow(),
 
-            const SizedBox(height: 16),
-            // ---------- ACCIONES RÁPIDAS ----------
-            Text(
-              'Acciones rápidas',
-              style: TextStyle(
-                color: cs.onSurface.withValues(alpha: .9),
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 8),
-            _QuickActions(),
-
-            const SizedBox(height: 20),
-            // ---------- BOTÓN EDITAR ----------
-           FilledButton.icon(
-            style: FilledButton.styleFrom(
-              backgroundColor: colorList[0],
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            onPressed: () async {
-              // Enviar los datos actuales a la pantalla de edición y esperar el resultado
-              final result = await context.push<ParcelaData>('/parcela/editar', extra: _data);
-              if (result != null) {
-                // Si el usuario guardó cambios, actualizar la UI
-                setState(() => _data = result);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Información actualizada')),
-                );
-              }
-            },
-            icon: const Icon(Icons.edit_outlined),
-            label: const Text(
-              'Editar información',
-              style: TextStyle(fontWeight: FontWeight.w800),
-            ),
-          ),
+            SizedBox(height: 20),
+            _EditButton(),
           ],
         ),
       ),
@@ -164,6 +101,8 @@ class _ParcelaDetailPageState extends State<ParcelaDetailPage> {
 // ------------------------------------------------------------
 
 class _MapCard extends StatelessWidget {
+  const _MapCard();
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -180,61 +119,25 @@ class _MapCard extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
+                // Imagen de cultivo / mapa
+                Image.asset('assets/images/cultivo.webp', fit: BoxFit.cover),
+
+                // Capa de gradiente suave (sin icono, sin chip y sin pin)
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        cs.primary.withValues(alpha: .15),
-                        cs.primary.withValues(alpha: .08),
+                        cs.primary.withValues(alpha: .12),
+                        cs.primary.withValues(alpha: .06),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                   ),
-                  child: Icon(Icons.map_outlined,
-                      size: 72, color: cs.onSurface.withValues(alpha: .35)),
                 ),
-                Positioned(
-                  right: 12,
-                  top: 12,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: cs.surface.withValues(alpha: .9),
-                      borderRadius: BorderRadius.circular(100),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: .08),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
-                      child: Row(
-                        children: [
-                          Icon(Icons.my_location,
-                              size: 16, color: cs.onSurface),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Ubicación',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w800,
-                              color: cs.onSurface,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: const Alignment(0.15, 0.2),
-                  child: Icon(Icons.location_pin,
-                      size: 36, color: colorList[0]),
-                ),
+                // 🔻 Se eliminaron:
+                // - Positioned con el chip "Ubicación"
+                // - Align con el pin (Icons.location_pin)
               ],
             ),
           ),
@@ -265,6 +168,7 @@ class _CropSummaryCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Ícono de cultivo
             Container(
               width: 42,
               height: 42,
@@ -275,10 +179,12 @@ class _CropSummaryCard extends StatelessWidget {
               child: Icon(Icons.eco, color: colorList[0]),
             ),
             const SizedBox(width: 12),
+            // Textos
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Chip de cultivo
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -361,11 +267,13 @@ class _InfoTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style: TextStyle(
-                        color: cs.onSurface.withValues(alpha: .85),
-                        fontWeight: FontWeight.w800,
-                      )),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: cs.onSurface.withValues(alpha: .85),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                   const SizedBox(height: 2),
                   Text(
                     value,
@@ -471,6 +379,7 @@ class _MetricCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
+            // barra simple
             ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: SizedBox(
@@ -493,71 +402,43 @@ class _MetricCard extends StatelessWidget {
   }
 }
 
-class _QuickActions extends StatelessWidget {
+class _EditButton extends StatelessWidget {
+  const _EditButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      style: FilledButton.styleFrom(
+        backgroundColor: colorList[0],
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      onPressed: () => context.go('/editar'),
+      icon: const Icon(Icons.edit_outlined),
+      label: const Text(
+        'Editar información',
+        style: TextStyle(fontWeight: FontWeight.w800),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String text;
+  const _SectionHeader({required this.text});
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-
-    Widget item(IconData icon, String label, VoidCallback onTap) {
-      return Expanded(
-        child: Material(
-          color: cs.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(12),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: colorList[0].withValues(alpha: .12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(icon, color: colorList[0]),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: cs.onSurface.withValues(alpha: .85),
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Row(
-      children: [
-        item(Icons.camera_alt_outlined, 'Agregar\nevidencia', () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Próximamente: agregar evidencia')),
-          );
-        }),
-        const SizedBox(width: 10),
-        item(Icons.waves_outlined, 'Registrar\nriego', () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Próximamente: registrar riego')),
-          );
-        }),
-        const SizedBox(width: 10),
-        item(Icons.add_task_outlined, 'Añadir\ntarea', () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Próximamente: añadir tarea')),
-          );
-        }),
-      ],
+    return Text(
+      text,
+      style: TextStyle(
+        color: cs.onSurface.withValues(alpha: .9),
+        fontWeight: FontWeight.w800,
+      ),
     );
   }
 }
