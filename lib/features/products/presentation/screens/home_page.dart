@@ -181,7 +181,7 @@ class _HomePageState extends State<HomePage> {
                     iconPath: 'assets/icons/campo.png',
                     title: 'Ver mi Parcela',
                     subtitle: 'Detalles',
-                    onTap: () {},
+                    onTap: () => context.go('/parcela'),
                   ),
                 ],
               ),

@@ -209,7 +209,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlay,
-      // 👇 Manejo del botón físico/gesto "Atrás"
+      // Manejo del botón físico/gesto "Atrás"
       child: WillPopScope(
         onWillPop: () async {
           final r = GoRouter.of(context);
