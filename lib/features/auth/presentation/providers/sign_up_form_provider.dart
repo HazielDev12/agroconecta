@@ -10,29 +10,29 @@ class SignUpFormState {
   final bool isFormPosted;
   final bool isValid;
 
-  final Name nombre;
-  final LastName apellidos;
-  final DateOfBirth fechaNacimiento;
+  final Name name;
+  final LastName lastName;
+  final DateOfBirth dateOfBirth;
   final Curp curp;
-  final Phone telefono;
+  final Phone phoneNumber;
   final Email email;
   final Password password;
   final ConfirmedPassword confirmPassword;
-  final TermsAccepted aceptaTerminos;
+  final TermsAccepted termsAccepted;
 
-  SignUpFormState({
+  const SignUpFormState({
     this.isPosting = false,
     this.isFormPosted = false,
     this.isValid = false,
-    this.nombre = const Name.pure(),
-    this.apellidos = const LastName.pure(),
-    this.fechaNacimiento = const DateOfBirth.pure(),
+    this.name = const Name.pure(),
+    this.lastName = const LastName.pure(),
+    this.dateOfBirth = const DateOfBirth.pure(),
     this.curp = const Curp.pure(),
-    this.telefono = const Phone.pure(),
+    this.phoneNumber = const Phone.pure(),
     this.email = const Email.pure(),
     this.password = const Password.pure(),
     this.confirmPassword = const ConfirmedPassword.pure(),
-    this.aceptaTerminos = const TermsAccepted.pure(),
+    this.termsAccepted = const TermsAccepted.pure(),
   });
 
   SignUpFormState copyWith({
@@ -53,54 +53,54 @@ class SignUpFormState {
       isPosting: isPosting ?? this.isPosting,
       isFormPosted: isFormPosted ?? this.isFormPosted,
       isValid: isValid ?? this.isValid,
-      nombre: nombre ?? this.nombre,
-      apellidos: apellidos ?? this.apellidos,
-      fechaNacimiento: fechaNacimiento ?? this.fechaNacimiento,
+      name: nombre ?? this.name,
+      lastName: apellidos ?? this.lastName,
+      dateOfBirth: fechaNacimiento ?? this.dateOfBirth,
       curp: curp ?? this.curp,
-      telefono: telefono ?? this.telefono,
+      phoneNumber: telefono ?? this.phoneNumber,
       email: email ?? this.email,
       password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,
-      aceptaTerminos: aceptaTerminos ?? this.aceptaTerminos,
+      termsAccepted: aceptaTerminos ?? this.termsAccepted,
     );
   }
 
   @override
   String toString() {
     return '''
-    SignUpFormState:
-      isPosting: $isPosting,
-      isFormPosted: $isFormPosted,
-      isValid: $isValid,
-      nombre: $nombre,
-      apellidos: $apellidos,
-      fechaNacimiento: $fechaNacimiento,
-      curp: $curp,
-      telefono: $telefono,
-      email: $email,
-      password: $password,
-      confirmPassword: $confirmPassword,
-      aceptaTerminos: $aceptaTerminos,
-    ''';
+  SignUpFormState:
+    isPosting: $isPosting,
+    isFormPosted: $isFormPosted,
+    isValid: $isValid,
+    nombre: $name,
+    apellidos: $lastName,
+    fechaNacimiento: $dateOfBirth,
+    curp: $curp,
+    telefono: $phoneNumber,
+    email: $email,
+    password: $password,
+    confirmPassword: $confirmPassword,
+    aceptaTerminos: $termsAccepted,
+  ''';
   }
 }
 
 // --- NOTIFIER ---
 class SignUpFormNotifier extends StateNotifier<SignUpFormState> {
-  SignUpFormNotifier() : super(SignUpFormState());
+  SignUpFormNotifier() : super(const SignUpFormState());
 
   // ======= ON CHANGE METHODS =======
-  void onNombreChange(String value) {
+  void onNameChange(String value) {
     final newValue = Name.dirty(value);
     _updateState(nombre: newValue);
   }
 
-  void onApellidosChange(String value) {
+  void onLastNameChange(String value) {
     final newValue = LastName.dirty(value);
     _updateState(apellidos: newValue);
   }
 
-  void onFechaNacimientoChange(DateTime date) {
+  void onDateOfBirthChange(DateTime date) {
     final formatted = DateFormat('dd/MM/yy').format(date);
     final newValue = DateOfBirth.dirty(formatted);
     _updateState(fechaNacimiento: newValue);
@@ -111,7 +111,7 @@ class SignUpFormNotifier extends StateNotifier<SignUpFormState> {
     _updateState(curp: newValue);
   }
 
-  void onTelefonoChange(String value) {
+  void onPhoneChange(String value) {
     final newValue = Phone.dirty(value);
     _updateState(telefono: newValue);
   }
@@ -138,35 +138,55 @@ class SignUpFormNotifier extends StateNotifier<SignUpFormState> {
     _updateState(confirmPassword: confirm);
   }
 
-  void onAceptarTerminosChange(bool value) {
+  void onTermsAcceptedChange(bool value) {
     final newValue = TermsAccepted.dirty(value);
     _updateState(aceptaTerminos: newValue);
   }
 
   // ======= SUBMIT =======
-  void onFormSubmit() {
+  Future<void> onFormSubmit() async {
     _touchEveryField();
 
     if (!state.isValid) return;
 
+    state = state.copyWith(isPosting: true);
     debugPrint('Registro válido:\n${state.toString()}');
-    // Aquí puedes llamar a tu API o backend
+
+    try {
+      // TODO: llamar a la API de registro
+      // await api.registerUser({
+      //   'nombre': state.nombre.value,
+      //   'apellidos': state.apellidos.value,
+      //   'fecha_nacimiento': state.fechaNacimiento.value,
+      //   'curp': state.curp.value,
+      //   'telefono': state.telefono.value,
+      //   'email': state.email.value,
+      //   'password': state.password.value,
+      // });
+
+      await Future.delayed(const Duration(seconds: 1));
+      debugPrint('Usuario registrado correctamente');
+    } catch (e) {
+      debugPrint('Error al registrar: $e');
+    } finally {
+      state = state.copyWith(isPosting: false);
+    }
   }
 
   // ======= HELPERS =======
   void _touchEveryField() {
-    final nombre = Name.dirty(state.nombre.value);
-    final apellidos = LastName.dirty(state.apellidos.value);
-    final fechaNacimiento = DateOfBirth.dirty(state.fechaNacimiento.value);
+    final nombre = Name.dirty(state.name.value);
+    final apellidos = LastName.dirty(state.lastName.value);
+    final fechaNacimiento = DateOfBirth.dirty(state.dateOfBirth.value);
     final curp = Curp.dirty(state.curp.value);
-    final telefono = Phone.dirty(state.telefono.value);
+    final telefono = Phone.dirty(state.phoneNumber.value);
     final email = Email.dirty(state.email.value);
     final password = Password.dirty(state.password.value);
     final confirmPassword = ConfirmedPassword.dirty(
       original: password.value,
       value: state.confirmPassword.value,
     );
-    final aceptaTerminos = TermsAccepted.dirty(state.aceptaTerminos.value);
+    final aceptaTerminos = TermsAccepted.dirty(state.termsAccepted.value);
 
     state = state.copyWith(
       isFormPosted: true,
@@ -205,25 +225,25 @@ class SignUpFormNotifier extends StateNotifier<SignUpFormState> {
     TermsAccepted? aceptaTerminos,
   }) {
     state = state.copyWith(
-      nombre: nombre ?? state.nombre,
-      apellidos: apellidos ?? state.apellidos,
-      fechaNacimiento: fechaNacimiento ?? state.fechaNacimiento,
+      nombre: nombre ?? state.name,
+      apellidos: apellidos ?? state.lastName,
+      fechaNacimiento: fechaNacimiento ?? state.dateOfBirth,
       curp: curp ?? state.curp,
-      telefono: telefono ?? state.telefono,
+      telefono: telefono ?? state.phoneNumber,
       email: email ?? state.email,
       password: password ?? state.password,
       confirmPassword: confirmPassword ?? state.confirmPassword,
-      aceptaTerminos: aceptaTerminos ?? state.aceptaTerminos,
+      aceptaTerminos: aceptaTerminos ?? state.termsAccepted,
       isValid: Formz.validate([
-        nombre ?? state.nombre,
-        apellidos ?? state.apellidos,
-        fechaNacimiento ?? state.fechaNacimiento,
+        nombre ?? state.name,
+        apellidos ?? state.lastName,
+        fechaNacimiento ?? state.dateOfBirth,
         curp ?? state.curp,
-        telefono ?? state.telefono,
+        telefono ?? state.phoneNumber,
         email ?? state.email,
         password ?? state.password,
         confirmPassword ?? state.confirmPassword,
-        aceptaTerminos ?? state.aceptaTerminos,
+        aceptaTerminos ?? state.termsAccepted,
       ]),
     );
   }
