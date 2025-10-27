@@ -68,7 +68,8 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
       isValid: Formz.validate([state.email, newPassword]),
     );
   }
-
+  
+  // ======= SUBMIT =======
   onFormSubmit() {
     _touchEveryField();
 
