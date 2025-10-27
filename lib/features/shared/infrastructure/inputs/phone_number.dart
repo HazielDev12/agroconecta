@@ -22,6 +22,7 @@ class Phone extends FormzInput<String, PhoneError> {
     if (v.isEmpty) return PhoneError.empty;
     if (v.length != 10) return PhoneError.length;
     if (!_digits.hasMatch(v)) return PhoneError.format;
+
     return null;
   }
 }
