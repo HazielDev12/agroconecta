@@ -31,6 +31,10 @@ final GoRouter appRouter = GoRouter(
       path: '/parcela',
       builder: (_, _) => const ParcelaDetailPage(),
     ),
+    GoRoute(
+      path: '/editar',
+      builder: (_, _) => const ParcelaEditPage(),
+    ),
   ],
 
   // Página de error personalizada
