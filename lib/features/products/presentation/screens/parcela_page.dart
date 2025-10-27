@@ -19,77 +19,88 @@ class ParcelaDetailPage extends StatelessWidget {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlay,
-      child: Scaffold(
-        backgroundColor: cs.surface,
-        appBar: AppBar(
-          backgroundColor: colorList[2],
-          elevation: 0,
-          title: const Text(
-            'Detalles de Parcela',
-            style: TextStyle(fontWeight: FontWeight.w800),
+      child: WillPopScope(
+        onWillPop: () async {
+          final r = GoRouter.of(context);
+          if (r.canPop()) {
+            r.pop();
+          } else {
+            r.go('/home'); // cambia a '/parcela' si tienes una ruta específica
+          }
+          return false; // ya manejamos la navegación
+        },
+        child: Scaffold(
+          backgroundColor: cs.surface,
+          appBar: AppBar(
+            backgroundColor: colorList[2],
+            elevation: 0,
+            title: const Text(
+              'Detalles de Parcela',
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                final r = GoRouter.of(context);
+                if (r.canPop()) {
+                  r.pop();
+                } else {
+                  r.go('/home');
+                }
+              },
+            ),
           ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              final r = GoRouter.of(context);
-              if (r.canPop()) {
-                r.pop();
-              } else {
-                r.go('/home');
-              }
-            },
+          body: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            children: const [
+              // ---------- MAPA ----------
+              _MapCard(),
+              SizedBox(height: 12),
+
+              // ---------- RESUMEN ----------
+              _CropSummaryCard(
+                crop: 'Maíz',
+                name: 'Mi Parcela',
+                id: 'AGRO-QR-00123',
+              ),
+
+              SizedBox(height: 12),
+              _SectionHeader(text: 'Información Clave'),
+              SizedBox(height: 8),
+
+              _InfoTile(
+                icon: Icons.square_foot_outlined,
+                title: 'Superficie',
+                value: '10 Hectáreas',
+              ),
+              SizedBox(height: 8),
+              _InfoTile(
+                icon: Icons.texture_outlined,
+                title: 'Tipo de suelo',
+                value: 'Leptosol',
+              ),
+              SizedBox(height: 8),
+              _InfoTile(
+                icon: Icons.water_drop_outlined,
+                title: 'Sistema de Riego',
+                value: 'Temporal',
+              ),
+              SizedBox(height: 8),
+              _InfoTile(
+                icon: Icons.event_outlined,
+                title: 'Fecha de siembra',
+                value: '15 de Junio, 2025',
+              ),
+
+              SizedBox(height: 16),
+              _SectionHeader(text: 'Salud del Cultivo'),
+              SizedBox(height: 8),
+              _MiniMetricsRow(),
+
+              SizedBox(height: 20),
+              _EditButton(),
+            ],
           ),
-        ),
-        body: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          children: const [
-            // ---------- MAPA ----------
-            _MapCard(),
-            SizedBox(height: 12),
-
-            // ---------- RESUMEN ----------
-            _CropSummaryCard(
-              crop: 'Maíz',
-              name: 'Mi Parcela',
-              id: 'AGRO-QR-00123',
-            ),
-
-            SizedBox(height: 12),
-            _SectionHeader(text: 'Información Clave'),
-            SizedBox(height: 8),
-
-            _InfoTile(
-              icon: Icons.square_foot_outlined,
-              title: 'Superficie',
-              value: '10 Hectáreas',
-            ),
-            SizedBox(height: 8),
-            _InfoTile(
-              icon: Icons.texture_outlined,
-              title: 'Tipo de suelo',
-              value: 'Leptosol',
-            ),
-            SizedBox(height: 8),
-            _InfoTile(
-              icon: Icons.water_drop_outlined,
-              title: 'Sistema de Riego',
-              value: 'Temporal',
-            ),
-            SizedBox(height: 8),
-            _InfoTile(
-              icon: Icons.event_outlined,
-              title: 'Fecha de siembra',
-              value: '15 de Junio, 2025',
-            ),
-
-            SizedBox(height: 16),
-            _SectionHeader(text: 'Salud del Cultivo'),
-            SizedBox(height: 8),
-            _MiniMetricsRow(),
-
-            SizedBox(height: 20),
-            _EditButton(),
-          ],
         ),
       ),
     );
@@ -128,14 +139,14 @@ class _MapCard extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         cs.primary.withValues(alpha: .12),
-                        cs.primary.withValues(alpha: .06),
+                      cs.primary.withValues(alpha: .06),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                   ),
                 ),
-                // 🔻 Se eliminaron:
+                // 🔻 Eliminado:
                 // - Positioned con el chip "Ubicación"
                 // - Align con el pin (Icons.location_pin)
               ],
@@ -186,8 +197,10 @@ class _CropSummaryCard extends StatelessWidget {
                 children: [
                   // Chip de cultivo
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8, 
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: cs.primary.withValues(alpha: .1),
                       borderRadius: BorderRadius.circular(100),
