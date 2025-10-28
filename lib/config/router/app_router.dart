@@ -1,43 +1,54 @@
-import 'package:agroconecta/features/auth/presentation/screens/screens.dart';
-import 'package:agroconecta/features/products/presentation/screens/screens.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// Configuración de GoRouter (sin navigatorBuilder/builder aquí)
+// Clave global que usa NotificationService para navegar desde una notificación
+import 'package:agroconecta/core/notifications/notification_service.dart';
+
+// Pantallas
+import 'package:agroconecta/features/auth/presentation/screens/screens.dart';
+import 'package:agroconecta/features/products/presentation/screens/screens.dart';
+
+// Datos de alertas (para abrir detalle por id)
+import 'package:agroconecta/features/products/presentation/screens/alerta_data.dart';
+
 final GoRouter appRouter = GoRouter(
   debugLogDiagnostics: kDebugMode,
+  navigatorKey: NotificationService.I.navigatorKey, // <- clave para navegar desde notificaciones
   initialLocation: '/home',
 
   routes: [
-    // Evita "no routes for location: /"
-    GoRoute(path: '/', redirect: (_, _) => '/home'),
-    GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
+    GoRoute(path: '/', redirect: (_, __) => '/home'),
+
+    // Auth
+    GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+    GoRoute(path: '/forgot-password', builder: (_, __) => ForgotPasswordScreen()),
+    GoRoute(path: '/sign-up', builder: (_, __) => const SignUpScreen()),
+
+    // App
+    GoRoute(path: '/home', builder: (_, __) => const HomePage()),
+    GoRoute(path: '/convocatorias', builder: (_, __) => const ConvocatoriaPage()),
+    GoRoute(path: '/calendario', builder: (_, __) => const CalendarPage()),
+    GoRoute(path: '/parcela', builder: (_, __) => const ParcelaDetailPage()),
+    GoRoute(path: '/editar', builder: (_, __) => const ParcelaEditPage()),
+
+    // Detalle de alerta (para abrir desde notificación: /alerta/<id>)
     GoRoute(
-      path: '/forgot-password',
-      builder: (context, state) => ForgotPasswordScreen(),
-    ),
-    GoRoute(path: '/sign-up', builder: (_, _) => const SignUpScreen()),
-    GoRoute(path: '/home', builder: (_, _) => const HomePage()),
-    GoRoute(
-      path: '/convocatorias',
-      builder: (_, _) => const ConvocatoriaPage(),
-    ),
-    GoRoute(
-      path: '/calendario',
-      builder: (_, _) => const CalendarPage(),
-    ),
-    GoRoute(
-      path: '/parcela',
-      builder: (_, _) => const ParcelaDetailPage(),
-    ),
-    GoRoute(
-      path: '/editar',
-      builder: (_, _) => const ParcelaEditPage(),
+      path: '/alerta/:id',
+      builder: (context, state) {
+        final String id = state.pathParameters['id']!;
+        final alerta = findAlerta(id);
+        if (alerta == null) {
+          return const Scaffold(
+            body: Center(child: Text('Alerta no encontrada')),
+          );
+        }
+        return AlertaDetailPage(alerta: alerta);
+      },
     ),
   ],
 
-  // Página de error personalizada
+  // Página de error
   errorBuilder: (context, state) =>
       NotFoundScreen(error: state.error, currentLocation: state.uri.toString()),
 );
@@ -45,7 +56,7 @@ final GoRouter appRouter = GoRouter(
 /// Pantalla para rutas no encontradas
 class NotFoundScreen extends StatelessWidget {
   final Object? error;
-  final String? currentLocation; // llega desde errorBuilder
+  final String? currentLocation;
 
   const NotFoundScreen({super.key, this.error, this.currentLocation});
 
@@ -56,23 +67,16 @@ class NotFoundScreen extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         final router = GoRouter.of(context);
-
-        // 1) Si hay historial, hacemos pop
         if (router.canPop()) {
           router.pop();
           return false;
         }
-
-        // 2) Si no hay historial y NO estamos en /home, vamos a /home
-        final loc =
-            currentLocation ??
-            router.routeInformationProvider.value.location; // fallback amplio
+        final loc = currentLocation ??
+            router.routeInformationProvider.value.location;
         if (loc != '/home') {
           router.go('/home');
           return false;
         }
-
-        // 3) Ya estamos en /home y no hay historial -> salir de la app
         return true;
       },
       child: Scaffold(
@@ -97,11 +101,7 @@ class NotFoundScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.explore_off,
-                  size: 64,
-                  color: cs.onSurface.withValues(alpha: .6),
-                ),
+                Icon(Icons.explore_off, size: 64, color: cs.onSurface.withValues(alpha: .6)),
                 const SizedBox(height: 12),
                 const Text(
                   'Ups… no encontramos esta página',
