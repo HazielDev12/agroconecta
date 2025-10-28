@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:agroconecta/config/router/app_router.dart';
-import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 
-void main() {
+import 'config/config.dart';
+
+void main() async {
+  await Enviroment.initEnviroment();
+
   runApp(const ProviderScope(child: MainApp()));
 }
 
@@ -14,6 +16,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(Enviroment.apiUrl);
+
     return MaterialApp.router(
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
