@@ -10,7 +10,8 @@ class LoginFormState {
   final bool isValid;
   // final Email email;
   final Curp curp;
-  final Password password;
+  // final Password password;
+  final WeakPassword password;
 
   LoginFormState({
     this.isPosting = false,
@@ -18,7 +19,8 @@ class LoginFormState {
     this.isValid = false,
     // this.email = const Email.pure(),
     this.curp = const Curp.pure(),
-    this.password = const Password.pure(),
+    // this.password = const Password.pure(),
+    this.password = const WeakPassword.pure(),
   });
 
   LoginFormState copyWith({
@@ -27,7 +29,8 @@ class LoginFormState {
     bool? isValid,
     // Email? email,
     Curp? curp,
-    Password? password,
+    // Password? password,
+    WeakPassword? password,
   }) {
     return LoginFormState(
       isPosting: isPosting ?? this.isPosting,
@@ -35,6 +38,7 @@ class LoginFormState {
       isValid: isValid ?? this.isValid,
       // email: email ?? this.email,
       curp: curp ?? this.curp,
+      // password: password ?? this.password,
       password: password ?? this.password,
     );
   }
@@ -73,7 +77,8 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
   }
 
   onPasswordChange(String value) {
-    final newPassword = Password.dirty(value);
+    // final newPassword = Password.dirty(value);
+    final newPassword = WeakPassword.dirty(value);
     state = state.copyWith(
       password: newPassword,
       isValid: Formz.validate([state.curp, newPassword]),
@@ -92,7 +97,8 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
   _touchEveryField() {
     // final email = Email.dirty(state.email.value);
     final curp = Curp.dirty(state.curp.value);
-    final password = Password.dirty(state.password.value);
+    // final password = Password.dirty(state.password.value);
+    final password = WeakPassword.dirty(state.password.value);
 
     state = state.copyWith(
       isFromPosted: true,
