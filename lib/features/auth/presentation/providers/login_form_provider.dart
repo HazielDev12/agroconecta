@@ -8,14 +8,16 @@ class LoginFormState {
   final bool isPosting;
   final bool isFromPosted;
   final bool isValid;
-  final Email email;
+  // final Email email;
+  final Curp curp;
   final Password password;
 
   LoginFormState({
     this.isPosting = false,
     this.isFromPosted = false,
     this.isValid = false,
-    this.email = const Email.pure(),
+    // this.email = const Email.pure(),
+    this.curp = const Curp.pure(),
     this.password = const Password.pure(),
   });
 
@@ -23,14 +25,16 @@ class LoginFormState {
     bool? isPosting,
     bool? isFromPosted,
     bool? isValid,
-    Email? email,
+    // Email? email,
+    Curp? curp,
     Password? password,
   }) {
     return LoginFormState(
       isPosting: isPosting ?? this.isPosting,
       isFromPosted: isFromPosted ?? this.isFromPosted,
       isValid: isValid ?? this.isValid,
-      email: email ?? this.email,
+      // email: email ?? this.email,
+      curp: curp ?? this.curp,
       password: password ?? this.password,
     );
   }
@@ -43,7 +47,7 @@ class LoginFormState {
       isPosting: $isPosting,
       isFromPosted: $isFromPosted,
       isValid: $isValid,
-      email: $email,
+      curp: $curp,
       password: $password,
     ''';
   }
@@ -53,11 +57,18 @@ class LoginFormState {
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
   LoginFormNotifier() : super(LoginFormState());
 
-  onEmailChange(String value) {
+  /*   onEmailChange(String value) {
     final newEmail = Email.dirty(value);
     state = state.copyWith(
       email: newEmail,
       isValid: Formz.validate([newEmail, state.password]),
+    );
+  } */
+  onCurpChange(String value) {
+    final newCurp = Curp.dirty(value.toUpperCase());
+    state = state.copyWith(
+      curp: newCurp,
+      isValid: Formz.validate([newCurp, state.password]),
     );
   }
 
@@ -65,10 +76,10 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     final newPassword = Password.dirty(value);
     state = state.copyWith(
       password: newPassword,
-      isValid: Formz.validate([state.email, newPassword]),
+      isValid: Formz.validate([state.curp, newPassword]),
     );
   }
-  
+
   // ======= SUBMIT =======
   onFormSubmit() {
     _touchEveryField();
@@ -79,14 +90,16 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
   }
 
   _touchEveryField() {
-    final email = Email.dirty(state.email.value);
+    // final email = Email.dirty(state.email.value);
+    final curp = Curp.dirty(state.curp.value);
     final password = Password.dirty(state.password.value);
 
     state = state.copyWith(
       isFromPosted: true,
-      email: email,
+      // email: email,
+      curp: curp,
       password: password,
-      isValid: Formz.validate([email, password]),
+      isValid: Formz.validate([curp, password]),
     );
   }
 }
