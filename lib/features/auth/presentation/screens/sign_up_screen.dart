@@ -136,7 +136,7 @@ class _SignUpForm extends ConsumerWidget {
             label: 'CURP',
             suffixIcon: Icons.fingerprint,
             inputFormatters: [
-              UpperCaseTextFormatter(),
+              _UpperCaseTextFormatter(),
               LengthLimitingTextInputFormatter(18),
             ],
             textInputAction: TextInputAction.next,
@@ -312,7 +312,7 @@ class _SectionHeader extends StatelessWidget {
 }
 
 // Forzar MAYÚSCULAS (CURP)
-class UpperCaseTextFormatter extends TextInputFormatter {
+class _UpperCaseTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
