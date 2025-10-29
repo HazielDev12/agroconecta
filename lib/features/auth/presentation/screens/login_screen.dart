@@ -1,6 +1,8 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
 import 'package:agroconecta/features/auth/presentation/providers/providers.dart';
+import 'package:agroconecta/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:agroconecta/features/shared/widgets/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
@@ -88,13 +90,17 @@ class _LoginForm extends ConsumerWidget {
 
           //Campo de usuario/correo
           CustomTextFormField(
-            label: 'Correo',
+            label: 'CURP',
             keyboardType: TextInputType.emailAddress,
-            suffixIcon: Icons.email_outlined,
+            suffixIcon: Icons.fingerprint,
+            inputFormatters: [
+              _UpperCaseTextFormatter(),
+              LengthLimitingTextInputFormatter(18),
+            ],
             onChanged: (value) =>
-                ref.read(loginFormProvider.notifier).onEmailChange(value),
+                ref.read(loginFormProvider.notifier).onCurpChange(value),
             errorMessage: loginForm.isFromPosted
-                ? loginForm.email.errorMessage
+                ? loginForm.curp.errorMessage
                 : null,
           ),
           const SizedBox(height: 16),
@@ -164,4 +170,13 @@ class _LoginForm extends ConsumerWidget {
       ),
     );
   }
+}
+
+// Forzar MAYÚSCULAS (CURP)
+class _UpperCaseTextFormatter extends TextInputFormatter{
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) => newValue.copyWith(text: newValue.text.toUpperCase());
 }
