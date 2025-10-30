@@ -20,7 +20,15 @@ class SignUpScreen extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         backgroundColor: const Color(0xFFDCE0E0),
-        body: const SafeArea(child: Center(child: _SignUpCard())),
+        body: DecoratedBox(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/cultivo.webp'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: SafeArea(child: Center(child: _SignUpCard())),
+        ),
       ),
     );
   }
