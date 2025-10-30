@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:agroconecta/config/theme/app_theme.dart';
 
+
 enum EventType { evento, convocatoria, taller, curso, feria }
 
 Color typeColor(EventType t, ColorScheme cs) {

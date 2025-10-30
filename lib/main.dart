@@ -17,7 +17,7 @@ Future<void> main() async {
   // Inicializa permisos, canales y listeners
   await NotificationService.I.initialize();
 
-  // Programa notificaciones con base en tus eventos (hoy..+7 días)
+  // Programa notificaciones con base en tus eventos (hoy + 7 días)
   await NotificationService.I.scheduleUpcomingWeek(days: 7);
 
   // (Opcional, solo DEBUG) Pruebas: una inmediata y otra en 1 minuto
@@ -41,7 +41,7 @@ Future<void> _devScheduleIn1Minute() async {
     titulo: 'Recordatorio de prueba (1 min)',
     descripcion: 'Verifica sonido y navegación',
     fecha: fecha,
-    route: '/alerta/dev-1min',
+    route: '/alerta',
   );
   await NotificationService.I.scheduleForAlert(a);
 }

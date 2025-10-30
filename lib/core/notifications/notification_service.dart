@@ -4,16 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
-import 'package:agroconecta/features/products/presentation/screens/alerta_model.dart';
-import 'package:agroconecta/features/products/presentation/screens/alerta_data.dart';
+import 'package:agroconecta/features/products/presentation/screens/screens.dart';
 
 /// Servicio singleton para notificaciones locales.
 class NotificationService {
   NotificationService._();
   static final NotificationService I = NotificationService._();
 
-  /// La inyectamos en GoRouter (app_router.dart) para poder navegar
-  /// al tocar la notificación aunque la app esté en background/terminada.
+  /// La inyectas en `main.dart` para poder navegar al tocar la notificación.
   GlobalKey<NavigatorState>? navigatorKey;
 
   final AwesomeNotifications _plugin = AwesomeNotifications();
@@ -25,7 +23,7 @@ class NotificationService {
   /// Inicializa canales, pide permisos y registra listeners.
   Future<void> initialize() async {
     await _plugin.initialize(
-      null, // usa icono default de la app
+      null, // usa el ícono por defecto de la app
       [
         NotificationChannel(
           channelKey: _channelKey,
@@ -47,29 +45,29 @@ class NotificationService {
       debug: kDebugMode,
     );
 
+    // Android 13+: pide permiso si no está concedido.
     final allowed = await _plugin.isNotificationAllowed();
     if (!allowed) {
       await _plugin.requestPermissionToSendNotifications();
     }
 
-    // ===== NUEVO en v0.10.x: listeners (reemplaza actionStream) =====
+    // Listeners (API 0.10.x)
     AwesomeNotifications().setListeners(
-      onActionReceivedMethod: _onActionReceived,            // tap en notificación
-      onDismissActionReceivedMethod: _onDismissReceived,    // swipe/dismiss
-      onNotificationCreatedMethod: _onCreated,              // opcional
-      onNotificationDisplayedMethod: _onDisplayed,          // opcional
+      onActionReceivedMethod: _onActionReceived,
+      onDismissActionReceivedMethod: _onDismissReceivedStatic,
+      // Si quieres: onNotificationCreatedMethod: _onCreated,
+      //             onNotificationDisplayedMethod: _onDisplayed,
     );
   }
 
-  Future<void> dispose() async {
-    // No hay stream que cancelar en v0.10.x
-  }
+  /// En 0.10.x ya no hay streams que cancelar.
+  Future<void> dispose() async {}
 
   // -------- Programación / cancelación --------
 
   int _idFor(Alerta a) => a.id.hashCode & 0x7fffffff;
 
-  /// Programa una notificación en la fecha/hora de la alerta.
+  /// Programa una notificación para la fecha/hora del evento.
   Future<void> scheduleForAlert(Alerta a) async {
     await _plugin.createNotification(
       content: NotificationContent(
@@ -79,15 +77,12 @@ class NotificationService {
         body: a.descripcion ?? 'Recordatorio',
         notificationLayout: NotificationLayout.Default,
         category: NotificationCategory.Reminder,
-        payload: {
-          'alertId': a.id,
-          'route': a.route ?? '',
-        },
+        wakeUpScreen: true, // despierta pantalla cuando dispare
+        payload: {'alertId': a.id, 'route': a.route ?? ''},
       ),
       schedule: NotificationCalendar.fromDate(
         date: a.fecha,
-        allowWhileIdle: true,
-        // preciseAlarm: true, // descomenta si quieres alarmas precisas (Android 12+)
+        allowWhileIdle: true, // dispara aun en idle/doze
       ),
     );
   }
@@ -99,7 +94,7 @@ class NotificationService {
     }
   }
 
-  /// Programa automáticamente las próximas N (por defecto, 7) días.
+  /// Programa automáticamente las próximas [days] (default 7) días.
   Future<void> scheduleUpcomingWeek({int days = 7}) async {
     await scheduleForMany(getAlertasProximas(maxDias: days));
   }
@@ -109,7 +104,7 @@ class NotificationService {
 
   Future<void> cancelAll() => _plugin.cancelAll();
 
-  /// Notificación inmediata de prueba (la uso en `main.dart` con `assert`).
+  /// Notificación inmediata de prueba (para dev).
   Future<void> showInstantTest() async {
     await _plugin.createNotification(
       content: NotificationContent(
@@ -117,19 +112,18 @@ class NotificationService {
         channelKey: _channelKey,
         title: '🔔 Prueba de notificación',
         body: 'Toca para abrir el calendario',
+        wakeUpScreen: true,
         payload: {'route': '/calendario'},
       ),
     );
   }
 
-  // -------- Listeners estáticos requeridos por el plugin --------
-
-  static Future<void> _onActionReceived(ReceivedAction action) async {
+  // -------- Navegación al tocar la notificación (instancia) --------
+  void _onAction(ReceivedAction action) {
     final payload = action.payload ?? const {};
     final payloadRoute = payload['route'];
     final alertId = payload['alertId'];
 
-    // Decide adónde navegar
     String route = '/home';
     if (payloadRoute != null && payloadRoute.isNotEmpty) {
       route = payloadRoute;
@@ -137,7 +131,7 @@ class NotificationService {
       route = '/alerta/$alertId';
     }
 
-    final ctx = NotificationService.I.navigatorKey?.currentContext;
+    final ctx = navigatorKey?.currentContext;
     if (ctx == null) return;
 
     try {
@@ -147,11 +141,47 @@ class NotificationService {
     }
   }
 
-  static Future<void> _onDismissReceived(ReceivedAction action) async {
-    // Aquí podrías reprogramar la alerta para 2 días antes, etc.
-    // Por ahora, no hacemos nada.
+  // -------- Reprogramación al DESCARTAR (instancia) --------
+  Future<void> _onDismissReceived(ReceivedAction action) async {
+    final payload = action.payload ?? const {};
+    final alertId = payload['alertId'];
+    if (alertId == null || alertId.isEmpty) return;
+
+    final a = findAlerta(alertId);
+    if (a == null) return;
+
+    // Reprograma para 1 día antes (si aún no pasó).
+    final dt = a.fecha.subtract(const Duration(days: 1));
+    if (dt.isAfter(DateTime.now())) {
+      await _plugin.createNotification(
+        content: NotificationContent(
+          id: _idFor(a), // mismo id para reemplazar
+          channelKey: _channelKey,
+          title: '⏰ Recordatorio: ${a.titulo}',
+          body: a.descripcion ?? 'Faltan 1 día',
+          notificationLayout: NotificationLayout.Default,
+          category: NotificationCategory.Reminder,
+          wakeUpScreen: true,
+          payload: {'alertId': a.id, 'route': a.route ?? ''},
+        ),
+        schedule: NotificationCalendar.fromDate(
+          date: dt,
+          allowWhileIdle: true,
+        ),
+      );
+    }
   }
 
-  static Future<void> _onCreated(ReceivedNotification notification) async {}
-  static Future<void> _onDisplayed(ReceivedNotification notification) async {}
+  // ======== Callbacks estáticos requeridos por el plugin ========
+  static Future<void> _onActionReceived(ReceivedAction action) async {
+    I._onAction(action);
+  }
+
+  static Future<void> _onDismissReceivedStatic(ReceivedAction action) async {
+    await I._onDismissReceived(action);
+  }
+
+  // (Opcionales, solo si los habilitas en setListeners)
+  static Future<void> _onCreated(ReceivedNotification n) async {}
+  static Future<void> _onDisplayed(ReceivedNotification n) async {}
 }
