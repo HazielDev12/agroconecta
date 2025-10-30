@@ -18,7 +18,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final user = await authRepository.login(curp, password);
       _setLoggedUser(user);
-      
     } on CustomError catch (e) {
       logout(e.message);
     } catch (e) {
@@ -35,7 +34,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void _setLoggedUser(User user) {
     // TODO: necesito guardar el token físicamente
-    state = state.copyWith(user: user, authStatus: AuthStatus.authenticated);
+    state = state.copyWith(
+      user: user,
+      authStatus: AuthStatus.authenticated,
+      errorMessage: '',
+    );
   }
 
   Future<void> logout([String? errorMessage]) async {
