@@ -5,7 +5,14 @@ import 'package:agroconecta/features/auth/infrastructure/infrastructure.dart';
 import 'package:dio/dio.dart';
 
 class AuthDataSourceImpl extends AuthDataSource {
-  final dio = Dio(BaseOptions(baseUrl: Enviroment.apiUrl));
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: Enviroment.apiUrl,
+      /*        connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 15),
+      sendTimeout: const Duration(seconds: 10), */
+    ),
+  );
 
   @override
   Future<User> checkAuthStatus(String token) {
@@ -18,13 +25,21 @@ class AuthDataSourceImpl extends AuthDataSource {
     try {
       final response = await dio.post(
         '/login',
-        data: {'curp': curp, 'password': password},
+        data: {'CURP': curp, 'password': password},
       );
 
       final user = UserMapper.userJsonToEntity(response.data);
       return user;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 302) {
+        throw CustomError('Credenciales incorrectas');
+      }
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError('Revisar conexión a internet');
+      }
+      throw Exception();
     } catch (e) {
-      throw WrongCredentials();
+      throw Exception();
     }
   }
 

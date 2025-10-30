@@ -1,6 +1,9 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
+import 'package:agroconecta/features/auth/presentation/providers/auth_provider.dart';
 import 'package:agroconecta/features/auth/presentation/providers/providers.dart';
+import 'package:agroconecta/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:agroconecta/features/shared/widgets/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
@@ -64,10 +67,21 @@ class _LoginCard extends StatelessWidget {
 class _LoginForm extends ConsumerWidget {
   const _LoginForm();
 
+  void showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loginForm = ref.watch(loginFormProvider);
     // final textStyles = Theme.of(context).textTheme;
+
+    ref.listen(authProvider, (previous, next) {
+      if (next.errorMessage.isEmpty) return;
+      showSnackbar(context, next.errorMessage);
+    });
 
     return Form(
       //Contenido Centrado
@@ -88,13 +102,17 @@ class _LoginForm extends ConsumerWidget {
 
           //Campo de usuario/correo
           CustomTextFormField(
-            label: 'Correo',
+            label: 'CURP',
             keyboardType: TextInputType.emailAddress,
-            suffixIcon: Icons.email_outlined,
+            suffixIcon: Icons.fingerprint,
+            inputFormatters: [
+              _UpperCaseTextFormatter(),
+              LengthLimitingTextInputFormatter(18),
+            ],
             onChanged: (value) =>
-                ref.read(loginFormProvider.notifier).onEmailChange(value),
+                ref.read(loginFormProvider.notifier).onCurpChange(value),
             errorMessage: loginForm.isFromPosted
-                ? loginForm.email.errorMessage
+                ? loginForm.curp.errorMessage
                 : null,
           ),
           const SizedBox(height: 16),
@@ -132,10 +150,10 @@ class _LoginForm extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: CustomFilledButton(
+              text: 'Iniciar Sesión',
               onPressed: () {
                 ref.read(loginFormProvider.notifier).onFormSubmit();
               },
-              text: 'Iniciar Sesión',
             ),
           ),
           const SizedBox(height: 20),
@@ -164,4 +182,13 @@ class _LoginForm extends ConsumerWidget {
       ),
     );
   }
+}
+
+// Forzar MAYÚSCULAS (CURP)
+class _UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) => newValue.copyWith(text: newValue.text.toUpperCase());
 }

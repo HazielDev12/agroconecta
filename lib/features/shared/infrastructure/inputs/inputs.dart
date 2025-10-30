@@ -7,3 +7,4 @@ export 'lastname.dart';
 export 'curp.dart';
 export 'date_of_birth.dart';
 export 'terms.dart';
+export 'password_weak.dart';
