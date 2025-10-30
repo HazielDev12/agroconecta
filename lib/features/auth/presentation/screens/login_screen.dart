@@ -1,4 +1,5 @@
 import 'package:agroconecta/config/theme/app_theme.dart';
+import 'package:agroconecta/features/auth/presentation/providers/auth_provider.dart';
 import 'package:agroconecta/features/auth/presentation/providers/providers.dart';
 import 'package:agroconecta/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:agroconecta/features/shared/widgets/widgets.dart';
@@ -66,10 +67,21 @@ class _LoginCard extends StatelessWidget {
 class _LoginForm extends ConsumerWidget {
   const _LoginForm();
 
+  void showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loginForm = ref.watch(loginFormProvider);
     // final textStyles = Theme.of(context).textTheme;
+
+    ref.listen(authProvider, (previous, next) {
+      if (next.errorMessage.isEmpty) return;
+      showSnackbar(context, next.errorMessage);
+    });
 
     return Form(
       //Contenido Centrado
@@ -138,10 +150,10 @@ class _LoginForm extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: CustomFilledButton(
+              text: 'Iniciar Sesión',
               onPressed: () {
                 ref.read(loginFormProvider.notifier).onFormSubmit();
               },
-              text: 'Iniciar Sesión',
             ),
           ),
           const SizedBox(height: 20),
@@ -173,7 +185,7 @@ class _LoginForm extends ConsumerWidget {
 }
 
 // Forzar MAYÚSCULAS (CURP)
-class _UpperCaseTextFormatter extends TextInputFormatter{
+class _UpperCaseTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
