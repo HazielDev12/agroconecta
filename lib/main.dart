@@ -52,6 +52,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(Enviroment.apiUrl);
+
     return MaterialApp.router(
       routerConfig: appRouter, // Asegúrate que GoRouter use navigatorKey en app_router.dart
       debugShowCheckedModeBanner: false,
