@@ -44,8 +44,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // void registerUser()
 
   void checkAuthStatus() async {
-    print('🚀🚀🚀 LLAMANDO checkAuthStatus 🚀🚀🚀'); // 👈 AGREGA ESTO
-
     final token = await keyValueStorageService.getValue<String>('token');
     if (token == null) return logout();
 

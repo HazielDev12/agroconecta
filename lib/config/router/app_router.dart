@@ -1,15 +1,21 @@
+import 'package:agroconecta/features/auth/presentation/screens/check_auth_status_screen.dart';
 import 'package:agroconecta/features/auth/presentation/screens/screens.dart';
 import 'package:agroconecta/features/products/presentation/screens/screens.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+// final goRouter
+
 /// Configuración de GoRouter (sin navigatorBuilder/builder aquí)
 final GoRouter appRouter = GoRouter(
   debugLogDiagnostics: kDebugMode,
-  initialLocation: '/login',
+  initialLocation: '/splash',
 
   routes: [
+    //Primera pantalla
+    GoRoute(path: '/splash', builder: (_, _) => const CheckAuthStatusScreen()),
+
     // Evita "no routes for location: /"
     GoRoute(path: '/', redirect: (_, _) => '/home'),
     GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
@@ -26,6 +32,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/calendario', builder: (_, _) => const CalendarPage()),
     GoRoute(path: '/parcela', builder: (_, _) => const ParcelaDetailPage()),
     GoRoute(path: '/editar', builder: (_, _) => const ParcelaEditPage()),
+    GoRoute(path: '/perfil', builder: (_, _) => const ProfileScreen()),
   ],
 
   // Página de error personalizada
