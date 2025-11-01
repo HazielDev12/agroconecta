@@ -1,7 +1,7 @@
 import 'package:agroconecta/features/auth/domain/domain.dart';
 import 'package:agroconecta/features/auth/infrastructure/infrastructure.dart';
-import 'package:agroconecta/features/shared/infrastructure/services/key_value_storage_service.dart';
-import 'package:agroconecta/features/shared/infrastructure/services/key_value_storage_service_impl.dart';
+import 'package:agroconecta/features/shared/services/key_value_storage_service.dart';
+import 'package:agroconecta/features/shared/services/key_value_storage_service_impl.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
@@ -21,7 +21,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier({
     required this.authRepository,
     required this.keyValueStorageService,
-  }) : super(AuthState());
+  }) : super(AuthState()) {
+    checkAuthStatus();
+  }
 
   Future<void> loginUser(String curp, String password) async {
     await Future.delayed(const Duration(milliseconds: 500));
@@ -42,6 +44,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // void registerUser()
 
   void checkAuthStatus() async {
+    print('🚀🚀🚀 LLAMANDO checkAuthStatus 🚀🚀🚀'); // 👈 AGREGA ESTO
+
     final token = await keyValueStorageService.getValue<String>('token');
     if (token == null) return logout();
 

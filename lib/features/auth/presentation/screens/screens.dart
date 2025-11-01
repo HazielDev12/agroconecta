@@ -1,3 +1,5 @@
-export 'package:agroconecta/features/auth/presentation/screens/login_screen.dart';
-export 'package:agroconecta/features/auth/presentation/screens/sign_up_screen.dart';
-export 'package:agroconecta/features/auth/presentation/screens/forgot_password_screen.dart';
+export 'login_screen.dart';
+export 'sign_up_screen.dart';
+export 'forgot_password_screen.dart';
+
+// export 'check_auth_status_screen.dart';
