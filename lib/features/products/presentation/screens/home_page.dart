@@ -7,11 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 // ========= NUEVO: usa las mismas destacadas que convocatorias.dart =========
+import '../../../shared/shared.dart';
 import 'convocatoria_card.dart';
 import 'convocatoria_data.dart';
 
 class HomePage extends StatefulWidget {
-  final String userName; 
+  final String userName;
   final String zoneName;
 
   const HomePage({
@@ -124,17 +125,20 @@ class _HomePageState extends State<HomePage> {
                       PageView.builder(
                         controller: _pageCtrl,
                         onPageChanged: (i) => setState(() => _current = i),
-                        itemCount: featured.isNotEmpty ? featured.length : 0, // NUEVO
+                        itemCount: featured.isNotEmpty
+                            ? featured.length
+                            : 0, // NUEVO
                         itemBuilder: (_, i) {
                           final c = featured[i];
                           return GestureDetector(
                             onTap: () => context.go('/convocatorias'), // NUEVO
-                            child: ConvocatoriaHeroCard(c: c),          // NUEVO
+                            child: ConvocatoriaHeroCard(c: c), // NUEVO
                           );
                         },
                       ),
                       // Dots
-                      if (featured.isNotEmpty) // NUEVO: evita error si lista vacía
+                      if (featured
+                          .isNotEmpty) // NUEVO: evita error si lista vacía
                         Positioned(
                           bottom: 10,
                           left: 0,
@@ -145,7 +149,9 @@ class _HomePageState extends State<HomePage> {
                               final isActive = i == _current;
                               return AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
-                                margin: const EdgeInsets.symmetric(horizontal: 3),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 3,
+                                ),
                                 width: isActive ? 22 : 8,
                                 height: 8,
                                 decoration: BoxDecoration(
@@ -224,47 +230,7 @@ class _HomePageState extends State<HomePage> {
         ),
 
         // --- Bottom Nav (placeholder, opcional si ya tienes tu Shell) ---
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: 0,
-          onDestinationSelected: (index) {
-            switch (index) {
-              case 0:
-                context.go('/home'); // Inicio
-                break;
-              case 1:
-                context.go('/apoyos'); // Apoyos
-                break;  
-              case 2:
-                context.go('/evidencias'); // Evidencias
-                break;
-              case 3:
-                context.go('/perfil'); // Perfil
-                break;
-            }
-          },
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Inicio',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.volunteer_activism_outlined),
-              selectedIcon: Icon(Icons.volunteer_activism),
-              label: 'Apoyos',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.photo_library_outlined),
-              selectedIcon: Icon(Icons.photo_library),
-              label: 'Evidencias',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person),
-              label: 'Yo',
-            ),
-          ],
-        ),
+        bottomNavigationBar: const BottomNavBarAgro(),
       ),
     );
   }
@@ -522,8 +488,10 @@ class _ReminderCard extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.red.withValues(alpha: .12),
                   foregroundColor: Colors.red.shade700,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   shape: const StadiumBorder(),
                 ),
                 onPressed: onDismiss,
@@ -534,8 +502,10 @@ class _ReminderCard extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: cs.primary,
                   foregroundColor: cs.onPrimary,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   shape: const StadiumBorder(),
                 ),
                 onPressed: onOpen,
