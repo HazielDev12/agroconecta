@@ -1,4 +1,5 @@
 import 'package:agroconecta/config/router/app_router_notifier.dart';
+import 'package:agroconecta/features/auth/presentation/providers/auth_provider.dart';
 import 'package:agroconecta/features/auth/presentation/screens/check_auth_status_screen.dart';
 import 'package:agroconecta/features/auth/presentation/screens/screens.dart';
 import 'package:agroconecta/features/products/presentation/screens/screens.dart';
@@ -12,7 +13,7 @@ final goRouterProvider = Provider((ref) {
 
   return GoRouter(
     // debugLogDiagnostics: kDebugMode,
-    initialLocation: '/login',
+    initialLocation: '/splash',
 
     refreshListenable: goRouterNotifier,
     routes: [
@@ -57,8 +58,29 @@ final goRouterProvider = Provider((ref) {
     ],
 
     redirect: (context, state) {
-      print(state.matchedLocation);
-      // return '/home';
+      final isGoingTo = state.matchedLocation;
+      final authStatus = goRouterNotifier.authStatus;
+
+      if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) {
+        return null;
+      }
+
+      if (authStatus == AuthStatus.notAuthenticated) {
+        if (isGoingTo == '/login' || isGoingTo == '/register') {
+          return null;
+        }
+        return '/login';
+      }
+
+      if (authStatus == AuthStatus.authenticated) {
+        if (isGoingTo == '/login' ||
+            isGoingTo == '/register' ||
+            isGoingTo == '/splash') {
+          return '/home';
+        }
+      }
+
+      return null;
     },
 
     // Página de error personalizada

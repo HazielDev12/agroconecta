@@ -5,15 +5,10 @@ import 'package:agroconecta/features/auth/infrastructure/infrastructure.dart';
 import 'package:dio/dio.dart';
 
 class AuthDataSourceImpl extends AuthDataSource {
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: Enviroment.apiUrl,
-    ),
-  );
+  final dio = Dio(BaseOptions(baseUrl: Enviroment.apiUrl));
 
   @override
   Future<User> checkAuthStatus(String token) async {
-    print('Entró a checkAuthStatus future');
     try {
       final response = await dio.get(
         '/check-status',
