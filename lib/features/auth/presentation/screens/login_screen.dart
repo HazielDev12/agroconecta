@@ -151,9 +151,9 @@ class _LoginForm extends ConsumerWidget {
             width: double.infinity,
             child: CustomFilledButton(
               text: 'Iniciar Sesión',
-              onPressed: () {
-                ref.read(loginFormProvider.notifier).onFormSubmit();
-              },
+              onPressed: loginForm.isPosting
+                  ? null
+                  : ref.read(loginFormProvider.notifier).onFormSubmit,
             ),
           ),
           const SizedBox(height: 20),
