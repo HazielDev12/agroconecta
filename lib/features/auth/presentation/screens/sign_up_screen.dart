@@ -20,15 +20,7 @@ class SignUpScreen extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         backgroundColor: const Color(0xFFDCE0E0),
-        body: DecoratedBox(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/cultivo.webp'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: SafeArea(child: Center(child: _SignUpCard())),
-        ),
+        body: const SafeArea(child: Center(child: _SignUpCard())),
       ),
     );
   }
@@ -283,14 +275,16 @@ class _SignUpForm extends ConsumerWidget {
                 '¿Ya tienes cuenta? ',
                 style: TextStyle(color: Colors.black54),
               ),
-              TextButton(
-                onPressed: () {
-                  if (context.canPop()) {
-                    return context.pop();
-                  }
-                  context.go('/login');
-                },
-                child: const Text('Ingresa aquí'),
+              GestureDetector(
+                onTap: () => context.pop(),
+                child: const Text(
+                  'Inicia sesión',
+                  style: TextStyle(
+                    color: Color(0xFF22A788),
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
               ),
             ],
           ),

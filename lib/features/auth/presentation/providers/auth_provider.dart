@@ -1,29 +1,16 @@
 import 'package:agroconecta/features/auth/domain/domain.dart';
 import 'package:agroconecta/features/auth/infrastructure/infrastructure.dart';
-import 'package:agroconecta/features/shared/services/key_value_storage_service.dart';
-import 'package:agroconecta/features/shared/services/key_value_storage_service_impl.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = AuthRepositoryImpl();
-  final keyValueStorageService = KeyValueStorageServiceImpl();
 
-  return AuthNotifier(
-    authRepository: authRepository,
-    keyValueStorageService: keyValueStorageService,
-  );
+  return AuthNotifier(authRepository: authRepository);
 });
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository authRepository;
-  final KeyValueStorageService keyValueStorageService;
-
-  AuthNotifier({
-    required this.authRepository,
-    required this.keyValueStorageService,
-  }) : super(AuthState()) {
-    checkAuthStatus();
-  }
+  AuthNotifier({required this.authRepository}) : super(AuthState());
 
   Future<void> loginUser(String curp, String password) async {
     await Future.delayed(const Duration(milliseconds: 500));
@@ -31,6 +18,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final user = await authRepository.login(curp, password);
       _setLoggedUser(user);
+      
     } on CustomError catch (e) {
       logout(e.message);
     } catch (e) {
@@ -43,31 +31,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   // void registerUser()
 
-  void checkAuthStatus() async {
-    final token = await keyValueStorageService.getValue<String>('token');
-    if (token == null) return logout();
+  void checkAuthStatus() async {}
 
-    try {
-      final user = await authRepository.checkAuthStatus(token);
-      _setLoggedUser(user);
-    } catch (e) {
-      logout();
-    }
-  }
-
-  void _setLoggedUser(User user) async {
-    await keyValueStorageService.setKeyValue('token', user.token);
-
-    state = state.copyWith(
-      user: user,
-      authStatus: AuthStatus.authenticated,
-      errorMessage: '',
-    );
+  void _setLoggedUser(User user) {
+    // TODO: necesito guardar el token físicamente
+    state = state.copyWith(user: user, authStatus: AuthStatus.authenticated);
   }
 
   Future<void> logout([String? errorMessage]) async {
-    await keyValueStorageService.removeKey('token');
-
+    //TODO: Limpiar token
     state = state.copyWith(
       authStatus: AuthStatus.notAuthenticated,
       user: null,
