@@ -283,16 +283,14 @@ class _SignUpForm extends ConsumerWidget {
                 '¿Ya tienes cuenta? ',
                 style: TextStyle(color: Colors.black54),
               ),
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: const Text(
-                  'Inicia sesión',
-                  style: TextStyle(
-                    color: Color(0xFF22A788),
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
+              TextButton(
+                onPressed: () {
+                  if (context.canPop()) {
+                    return context.pop();
+                  }
+                  context.go('/login');
+                },
+                child: const Text('Ingresa aquí'),
               ),
             ],
           ),

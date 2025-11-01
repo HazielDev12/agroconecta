@@ -1,43 +1,70 @@
+import 'package:agroconecta/config/router/app_router_notifier.dart';
 import 'package:agroconecta/features/auth/presentation/screens/check_auth_status_screen.dart';
 import 'package:agroconecta/features/auth/presentation/screens/screens.dart';
 import 'package:agroconecta/features/products/presentation/screens/screens.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/* final goRouterProvider = Provider((ref) {
-  return;
-}); */
+final goRouterProvider = Provider((ref) {
+  final goRouterNotifier = ref.read(goRoutherNotifierProvider);
 
-/// Configuración de GoRouter (sin navigatorBuilder/builder aquí)
-final GoRouter appRouter = GoRouter(
-  debugLogDiagnostics: kDebugMode,
-  initialLocation: '/splash',
+  return GoRouter(
+    // debugLogDiagnostics: kDebugMode,
+    initialLocation: '/login',
 
-  routes: [
-    //Primera pantalla
-    GoRoute(path: '/splash', builder: (_, _) => const CheckAuthStatusScreen()),
+    refreshListenable: goRouterNotifier,
+    routes: [
+      //Primera pantalla
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const CheckAuthStatusScreen(),
+      ),
 
-    // Evita "no routes for location: /"
-    GoRoute(path: '/', redirect: (_, _) => '/home'),
-    GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
-    GoRoute(
-      path: '/forgot-password',
-      builder: (context, state) => ForgotPasswordScreen(),
+      // Evita "no routes for location: /"
+      // GoRoute(path: '/', redirect: (context, context) => '/home'),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/sign-up',
+        builder: (context, state) => const SignUpScreen(),
+      ),
+      GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: '/convocatorias',
+        builder: (context, state) => const ConvocatoriaPage(),
+      ),
+      GoRoute(
+        path: '/calendario',
+        builder: (context, state) => const CalendarPage(),
+      ),
+      GoRoute(
+        path: '/parcela',
+        builder: (context, state) => const ParcelaDetailPage(),
+      ),
+      GoRoute(
+        path: '/editar',
+        builder: (context, state) => const ParcelaEditPage(),
+      ),
+      GoRoute(
+        path: '/perfil',
+        builder: (context, state) => const ProfileScreen(),
+      ),
+    ],
+
+    redirect: (context, state) {
+      print(state.matchedLocation);
+      // return '/home';
+    },
+
+    // Página de error personalizada
+    errorBuilder: (context, state) => NotFoundScreen(
+      error: state.error,
+      currentLocation: state.uri.toString(),
     ),
-    GoRoute(path: '/sign-up', builder: (_, _) => const SignUpScreen()),
-    GoRoute(path: '/home', builder: (_, _) => const HomePage()),
-    GoRoute(
-      path: '/convocatorias',
-      builder: (_, _) => const ConvocatoriaPage(),
-    ),
-    GoRoute(path: '/calendario', builder: (_, _) => const CalendarPage()),
-    GoRoute(path: '/parcela', builder: (_, _) => const ParcelaDetailPage()),
-    GoRoute(path: '/editar', builder: (_, _) => const ParcelaEditPage()),
-    GoRoute(path: '/perfil', builder: (_, _) => const ProfileScreen()),
-  ],
-
-  // Página de error personalizada
-  errorBuilder: (context, state) =>
-      NotFoundScreen(error: state.error, currentLocation: state.uri.toString()),
-);
+  );
+});
