@@ -33,26 +33,14 @@ Future<void> main() async {
   runApp(const ProviderScope(child: MainApp()));
 }
 
-// ---------- Utilidad de prueba (solo se ejecuta en DEBUG por el assert) ----------
-Future<void> _devScheduleIn1Minute() async {
-  final fecha = DateTime.now().add(const Duration(minutes: 1));
-  final a = Alerta(
-    id: 'dev-1min',
-    titulo: 'Recordatorio de prueba (1 min)',
-    descripcion: 'Verifica sonido y navegación',
-    fecha: fecha,
-    route: '/alerta',
-  );
-  await NotificationService.I.scheduleForAlert(a);
-}
-// -------------------------------------------------------------------------------
-
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    print(Enviroment.apiUrl);
+  Widget build(BuildContext context, WidgetRef ref) {
+    // print(Enviroment.apiUrl);
+
+    final appRouter = ref.watch(goRouterProvider);
 
     return MaterialApp.router(
       routerConfig: appRouter, // Asegúrate que GoRouter use navigatorKey en app_router.dart
